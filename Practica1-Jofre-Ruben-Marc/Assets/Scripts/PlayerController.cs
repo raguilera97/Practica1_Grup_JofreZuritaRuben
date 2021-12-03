@@ -10,7 +10,8 @@ public class PlayerController : MonoBehaviour
 
     private float velocity = 2f;
     private float xInput, yInput;
-    private Enums.Direction dir;
+    private Enums.Direction dir = Enums.Direction.South;
+
 
     void Start()
     {
