@@ -44,15 +44,15 @@ public class PlayerController : MonoBehaviour
             anim.SetFloat("LookX", 1.0f);
             anim.SetFloat("LookY", 0.0f);
         }
-        else if (CheckDirection() == Enums.Direction.North)
-        {
-            anim.SetFloat("LookX", 0.0f);
-            anim.SetFloat("LookY", 1.0f);
-        }
         else if (CheckDirection() == Enums.Direction.South)
         {
             anim.SetFloat("LookX", 0.0f);
             anim.SetFloat("LookY", -1.0f);
+        }
+        else if (CheckDirection() == Enums.Direction.North)
+        {
+            anim.SetFloat("LookX", 0.0f);
+            anim.SetFloat("LookY", 1.0f);
         }
     }
 
@@ -70,13 +70,13 @@ public class PlayerController : MonoBehaviour
 
     public Enums.Direction CheckDirection()
     {
-        if(yInput == 1)
-        {
-            dir = Enums.Direction.North;
-        }
-        else if (yInput == -1)
+        if(yInput == -1)
         {
             dir = Enums.Direction.South;
+        }
+        else if (yInput == 1)
+        {
+            dir = Enums.Direction.North;
         }
         else if (xInput == -1)
         {
