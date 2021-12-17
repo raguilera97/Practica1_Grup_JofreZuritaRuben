@@ -1,0 +1,1069 @@
+UI desingn --> nom del enemic i el player, nivell, vida (slider), opcions (atacar, curar-se/fugir, ...), tipus d'atacs, battleground design.
+Prefabs --> player, enemies.
+Animations --> idle (waiting), attack + move position (attackiing), hurt/dead (taking damage).
+Script --> battleHandler, characterBattle/Unit, STATES (START, PLAYER TURN, ENEMY TURN, WON LOST).
+
+Script exemle (Brackeys, simple) -->
+
+----------------------------------------------------------------------------------------------------
+	URL:
+
+https://www.youtube.com/watch?v=_1pz_ohupPs&t=54s
+
+-----------------------------------------------------------------------------------------------------
+	
+	HUD:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class BattleHUD : MonoBehaviour
+{
+
+	public Text nameText;
+	public Text levelText;
+	public Slider hpSlider;
+
+	public void SetHUD(Unit unit)
+	{
+		nameText.text = unit.unitName;
+		levelText.text = "Lvl " + unit.unitLevel;
+		hpSlider.maxValue = unit.maxHP;
+		hpSlider.value = unit.currentHP;
+	}
+
+	public void SetHP(int hp)
+	{
+		hpSlider.value = hp;
+	}
+
+}	
+	
+-----------------------------------------------------------------------------------------------------
+
+	battleSystem:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
+
+public class BattleSystem : MonoBehaviour
+{
+
+	public GameObject playerPrefab;
+	public GameObject enemyPrefab;
+
+	public Transform playerBattleStation;
+	public Transform enemyBattleStation;
+
+	Unit playerUnit;
+	Unit enemyUnit;
+
+	public Text dialogueText;
+
+	public BattleHUD playerHUD;
+	public BattleHUD enemyHUD;
+
+	public BattleState state;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+		state = BattleState.START;
+		StartCoroutine(SetupBattle());
+    }
+
+	IEnumerator SetupBattle()
+	{
+		GameObject playerGO = Instantiate(playerPrefab, playerBattleStation);
+		playerUnit = playerGO.GetComponent<Unit>();
+
+		GameObject enemyGO = Instantiate(enemyPrefab, enemyBattleStation);
+		enemyUnit = enemyGO.GetComponent<Unit>();
+
+		dialogueText.text = "A wild " + enemyUnit.unitName + " approaches...";
+
+		playerHUD.SetHUD(playerUnit);
+		enemyHUD.SetHUD(enemyUnit);
+
+		yield return new WaitForSeconds(2f);
+
+		state = BattleState.PLAYERTURN;
+		PlayerTurn();
+	}
+
+	IEnumerator PlayerAttack()
+	{
+		bool isDead = enemyUnit.TakeDamage(playerUnit.damage);
+
+		enemyHUD.SetHP(enemyUnit.currentHP);
+		dialogueText.text = "The attack is successful!";
+
+		yield return new WaitForSeconds(2f);
+
+		if(isDead)
+		{
+			state = BattleState.WON;
+			EndBattle();
+		} else
+		{
+			state = BattleState.ENEMYTURN;
+			StartCoroutine(EnemyTurn());
+		}
+	}
+
+	IEnumerator EnemyTurn()
+	{
+		dialogueText.text = enemyUnit.unitName + " attacks!";
+
+		yield return new WaitForSeconds(1f);
+
+		bool isDead = playerUnit.TakeDamage(enemyUnit.damage);
+
+		playerHUD.SetHP(playerUnit.currentHP);
+
+		yield return new WaitForSeconds(1f);
+
+		if(isDead)
+		{
+			state = BattleState.LOST;
+			EndBattle();
+		} else
+		{
+			state = BattleState.PLAYERTURN;
+			PlayerTurn();
+		}
+
+	}
+
+	void EndBattle()
+	{
+		if(state == BattleState.WON)
+		{
+			dialogueText.text = "You won the battle!";
+		} else if (state == BattleState.LOST)
+		{
+			dialogueText.text = "You were defeated.";
+		}
+	}
+
+	void PlayerTurn()
+	{
+		dialogueText.text = "Choose an action:";
+	}
+
+	IEnumerator PlayerHeal()
+	{
+		playerUnit.Heal(5);
+
+		playerHUD.SetHP(playerUnit.currentHP);
+		dialogueText.text = "You feel renewed strength!";
+
+		yield return new WaitForSeconds(2f);
+
+		state = BattleState.ENEMYTURN;
+		StartCoroutine(EnemyTurn());
+	}
+
+	public void OnAttackButton()
+	{
+		if (state != BattleState.PLAYERTURN)
+			return;
+
+		StartCoroutine(PlayerAttack());
+	}
+
+	public void OnHealButton()
+	{
+		if (state != BattleState.PLAYERTURN)
+			return;
+
+		StartCoroutine(PlayerHeal());
+	}
+
+}
+
+-----------------------------------------------------------------------------------
+
+	characterBattle/Unit:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Unit : MonoBehaviour
+{
+
+	public string unitName;
+	public int unitLevel;
+
+	public int damage;
+
+	public int maxHP;
+	public int currentHP;
+
+	public bool TakeDamage(int dmg)
+	{
+		currentHP -= dmg;
+
+		if (currentHP <= 0)
+			return true;
+		else
+			return false;
+	}
+
+	public void Heal(int amount)
+	{
+		currentHP += amount;
+		if (currentHP > maxHP)
+			currentHP = maxHP;
+	}
+
+}
+
+----------------------------------------------------------------------------
+
+Scripts examples (Code Monkey, complex) -->
+
+----------------------------------------------------------------------------
+	URL:
+
+https://www.youtube.com/watch?v=0QU0yV0CYT4&t=343s
+
+----------------------------------------------------------------------------
+
+	Character sword/attack Handler:
+
+using System;
+using UnityEngine;
+using V_AnimationSystem;
+using CodeMonkey.Utils;
+
+/*
+ * Player movement with Arrow keys
+ * Attack with Space
+ * */
+public class CharacterSwordHandler : MonoBehaviour, EnemyHandler.IEnemyTargetable {
+
+    private const float speed = 50f;
+        
+    private V_UnitSkeleton unitSkeleton;
+    private V_UnitAnimation unitAnimation;
+    private AnimatedWalker animatedWalker;
+    private State state;
+
+    private UnitAnimType idleUnitAnim;
+    private UnitAnimType walkUnitAnim;
+    private UnitAnimType hitUnitAnim;
+    private UnitAnimType attackUnitAnim;
+
+    private enum State {
+        Normal,
+        Busy,
+    }
+
+    private void Start() {
+        Transform bodyTransform = transform.Find("Body");
+        unitSkeleton = new V_UnitSkeleton(1f, bodyTransform.TransformPoint, (Mesh mesh) => bodyTransform.GetComponent<MeshFilter>().mesh = mesh);
+        unitAnimation = new V_UnitAnimation(unitSkeleton);
+        
+        idleUnitAnim = GameAssets.UnitAnimTypeEnum.dSwordTwoHandedBack_Idle;
+        walkUnitAnim = GameAssets.UnitAnimTypeEnum.dSwordTwoHandedBack_Walk;
+        hitUnitAnim = null;
+        attackUnitAnim = null;
+        
+        idleUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Idle");
+        walkUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Walk");
+        hitUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Hit");
+        attackUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_PunchQuickAttack");
+
+        animatedWalker = new AnimatedWalker(unitAnimation, idleUnitAnim, walkUnitAnim, 1f, .75f);
+
+        state = State.Normal;
+    }
+
+    private void Update() {
+        switch (state) {
+        case State.Normal:
+            HandleMovement();
+            HandleAttack();
+            break;
+        case State.Busy:
+            HandleAttack();
+            break;
+        }
+        unitSkeleton.Update(Time.deltaTime);
+    }
+
+    private void HandleMovement() {
+        float moveX = 0;
+        float moveY = 0;
+
+        if (Input.GetKey(KeyCode.UpArrow)) {
+            moveY = 1;
+        }
+        if (Input.GetKey(KeyCode.DownArrow)) {
+            moveY = -1;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow)) {
+            moveX = -1;
+        }
+        if (Input.GetKey(KeyCode.RightArrow)) {
+            moveX = 1;
+        }
+
+        Vector3 moveDir = new Vector3(moveX, moveY).normalized;
+        bool isIdle = moveX == 0 && moveY == 0;
+        if (!isIdle) {
+            Dirt_Handler.SpawnInterval(GetPosition() + new Vector3(0, -4), moveDir * -1);
+        }
+        animatedWalker.SetMoveVector(moveDir);
+        transform.position = transform.position + moveDir * speed * Time.deltaTime;
+    }
+
+    private void HandleAttack() {
+        Vector3 attackDir = animatedWalker.GetLastMoveVector();
+
+        if (Input.GetMouseButtonDown(0)) {
+            attackDir = (UtilsClass.GetMouseWorldPosition() - GetPosition()).normalized;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) {
+            // Attack
+            SetStateBusy();
+
+            EnemyHandler enemyHandler = EnemyHandler.GetClosestEnemy(GetPosition() + attackDir * 4f, 20f);
+            if (enemyHandler != null) {
+                enemyHandler.Damage(this);
+                attackDir = (enemyHandler.GetPosition() - GetPosition()).normalized;
+                transform.position = enemyHandler.GetPosition() + attackDir * -12f;
+            } else {
+                transform.position = transform.position + attackDir * 4f;
+            }
+
+            /*
+            unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_PunchStartup"), attackDir, 2f, (UnitAnim unitAnim) => {
+                unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_PunchQuickAttack"), attackDir, 1f, (UnitAnim unitAnim2) => SetStateNormal(), null, null);
+            }, null, null);
+            */
+
+            UnitAnimType activeAnimType = unitAnimation.GetActiveAnimType();
+            switch (activeAnimType.GetName()) {
+            default:
+                unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_PunchQuick"), attackDir, 1f, (UnitAnim unitAnim2) => SetStateNormal(), null, null);
+                break;
+            case "dBareHands_PunchQuick":
+                unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_KickQuick"), attackDir, 1f, (UnitAnim unitAnim2) => SetStateNormal(), null, null);
+                break;
+            }
+
+            //unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_PunchQuickAttack"), attackDir, 1f, (UnitAnim unitAnim2) => SetStateNormal(), null, null);
+
+            /*
+            Transform swordSlashTransform = Instantiate(GameAssets.i.pfSwordSlash, GetPosition() + attackDir * 13f, Quaternion.Euler(0, 0, UtilsClass.GetAngleFromVector(attackDir)));
+            swordSlashTransform.GetComponent<SpriteAnimator>().onLoop = () => Destroy(swordSlashTransform.gameObject);
+
+            UnitAnimType activeAnimType = unitAnimation.GetActiveAnimType();
+            if (activeAnimType == GameAssets.UnitAnimTypeEnum.dSwordTwoHandedBack_Sword) {
+                swordSlashTransform.localScale = new Vector3(swordSlashTransform.localScale.x, swordSlashTransform.localScale.y * -1, swordSlashTransform.localScale.z);
+                unitAnimation.PlayAnimForced(GameAssets.UnitAnimTypeEnum.dSwordTwoHandedBack_Sword2, attackDir, 1f, (UnitAnim unitAnim) => SetStateNormal(), null, null);
+            } else {
+                unitAnimation.PlayAnimForced(GameAssets.UnitAnimTypeEnum.dSwordTwoHandedBack_Sword, attackDir, 1f, (UnitAnim unitAnim) => SetStateNormal(), null, null);
+            }
+            */
+        }
+    }
+
+    public void Damage(EnemyHandler enemyHandler) {
+    }
+
+    private void SetStateBusy() {
+        state = State.Busy;
+    }
+
+    private void SetStateNormal() {
+        state = State.Normal;
+    }
+
+    public Vector3 GetPosition() {
+        return transform.position;
+    }
+
+        
+}
+
+----------------------------------------------------------------------------------------------------
+
+	Character aim/movement Handler:
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using V_ObjectSystem;
+using V_AnimationSystem;
+using CodeMonkey;
+using CodeMonkey.Utils;
+
+public class CharacterAimHandler : MonoBehaviour, EnemyHandler.IEnemyTargetable {
+
+    public class OnShootEventArgs : EventArgs {
+        public Vector3 gunEndPointPosition;
+        public Vector3 shootPosition;
+    }
+    public event EventHandler<OnShootEventArgs> OnShoot;
+
+	// Use this for initialization
+	private void Start () {
+        V_Object vObject = CreateBasicUnit(transform, new Vector3(500, 680), 30f, GameAssets.i.m_MarineSpriteSheet);
+        V_UnitAnimation unitAnimation = vObject.GetLogic<V_UnitAnimation>();
+        V_UnitSkeleton unitSkeleton = vObject.GetLogic<V_UnitSkeleton>();
+        V_IObjectTransform objectTransform = vObject.GetLogic<V_IObjectTransform>();
+
+        bool canShoot = true;
+
+        V_UnitSkeleton_Composite_Weapon unitSkeletonCompositeWeapon = new V_UnitSkeleton_Composite_Weapon(vObject, unitSkeleton, GameAssets.UnitAnimEnum.dMarine_AimWeaponRight, GameAssets.UnitAnimEnum.dMarine_AimWeaponRightInvertV, GameAssets.UnitAnimEnum.dMarine_ShootWeaponRight, GameAssets.UnitAnimEnum.dMarine_ShootWeaponRightInvertV);
+        vObject.AddRelatedObject(unitSkeletonCompositeWeapon);
+        unitSkeletonCompositeWeapon.SetActive();
+            
+        V_UnitSkeleton_Composite_Walker unitSkeletonCompositeWalker_BodyHead = new V_UnitSkeleton_Composite_Walker(vObject, unitSkeleton, GameAssets.UnitAnimTypeEnum.dMarine_Walk, GameAssets.UnitAnimTypeEnum.dMarine_Idle, new[] { "Body", "Head" });
+        vObject.AddRelatedObject(unitSkeletonCompositeWalker_BodyHead);
+            
+        V_UnitSkeleton_Composite_Walker unitSkeletonCompositeWalker_Feet = new V_UnitSkeleton_Composite_Walker(vObject, unitSkeleton, GameAssets.UnitAnimTypeEnum.dMarine_Walk, GameAssets.UnitAnimTypeEnum.dMarine_Idle, new[] { "FootL", "FootR" });
+        vObject.AddRelatedObject(unitSkeletonCompositeWalker_Feet);
+
+        FunctionUpdater.Create(() => {
+            Vector3 targetPosition = UtilsClass.GetMouseWorldPosition();
+            Vector3 aimDir = (targetPosition - vObject.GetPosition()).normalized;
+            
+            // Check for hits
+            Vector3 gunEndPointPosition = vObject.GetLogic<V_UnitSkeleton>().GetBodyPartPosition("MuzzleFlash");
+            RaycastHit2D raycastHit = Physics2D.Raycast(gunEndPointPosition, (targetPosition - gunEndPointPosition).normalized, Vector3.Distance(gunEndPointPosition, targetPosition));
+            if (raycastHit.collider != null) {
+                // Hit something
+                targetPosition = raycastHit.point;
+            }
+
+            unitSkeletonCompositeWeapon.SetAimTarget(targetPosition);
+
+            if (canShoot && Input.GetMouseButton(0)) {
+                // Shoot
+                canShoot = false;
+                // Replace Body and Head with Attack
+                unitSkeleton.ReplaceBodyPartSkeletonAnim(GameAssets.UnitAnimTypeEnum.dMarine_Attack.GetUnitAnim(aimDir), "Body", "Head");
+                // Shoot Composite Skeleton
+                unitSkeletonCompositeWeapon.Shoot(targetPosition, () => {
+                    canShoot = true;
+                });
+
+                // Add Effects
+                Vector3 shootFlashPosition = vObject.GetLogic<V_UnitSkeleton>().GetBodyPartPosition("MuzzleFlash");
+                if (OnShoot != null) OnShoot(this, new OnShootEventArgs { gunEndPointPosition = shootFlashPosition, shootPosition = targetPosition });
+
+                //Shoot_Flash.AddFlash(shootFlashPosition);
+                //WeaponTracer.Create(shootFlashPosition, targetPosition);
+            }
+
+
+            // Manual Movement
+            bool isMoving = false;
+            Vector3 moveDir = new Vector3(0, 0);
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
+                moveDir.y = +1; isMoving = true;
+            }
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
+                moveDir.y = -1; isMoving = true;
+            }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+                moveDir.x = -1; isMoving = true;
+            }
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+                moveDir.x = +1; isMoving = true;
+            }
+            moveDir.Normalize();
+
+            float moveSpeed = 50f;
+            Vector3 targetMoveToPosition = objectTransform.GetPosition() + moveDir * moveSpeed * Time.deltaTime;
+            // Test if can move there
+            raycastHit = Physics2D.Raycast(GetPosition() + moveDir * .1f, moveDir, Vector3.Distance(GetPosition(), targetMoveToPosition));
+            if (raycastHit.collider != null) {
+                // Hit something
+            } else {
+                // Can move, no wall
+                objectTransform.SetPosition(targetMoveToPosition);
+            }
+
+            if (isMoving) {
+                Dirt_Handler.SpawnInterval(GetPosition(), moveDir * -1f);
+            }
+            
+
+            // Update Feet
+            unitSkeletonCompositeWalker_Feet.UpdateBodyParts(isMoving, moveDir);
+
+            if (canShoot) {
+                // Update Head and Body parts only when Not Shooting
+                unitSkeletonCompositeWalker_BodyHead.UpdateBodyParts(isMoving, aimDir);
+            }
+        });	
+	}
+
+    public Vector3 GetPosition() {
+        return transform.position;
+    }
+
+
+    public void Damage(EnemyHandler enemyHandler) {
+        Damage(enemyHandler.GetPosition());
+    }
+
+    public void Damage(Vector3 attackerPosition) {
+        Vector3 bloodDir = (GetPosition() - attackerPosition).normalized;
+        Blood_Handler.SpawnBlood(GetPosition(), bloodDir);
+        // Knockback
+        transform.position += bloodDir * 3f;
+    }
+
+    
+    private static V_Object CreateBasicUnit(Transform unitTransform, Vector3 spawnPosition, float walkerSpeed, Material materialSpriteSheet) {
+        V_Object unitObject = V_Object.CreateObject(V_Main.UpdateType.Unit);
+                    
+        Transform instantiatedTransform = unitTransform;
+
+        V_IObjectTransform transform = new V_ObjectTransform_LateUpdate(instantiatedTransform, () => instantiatedTransform.transform.position, V_Main.RegisterOnLateUpdate, V_Main.DeregisterOnLateUpdate);
+        unitObject.AddRelatedObject(transform);
+        V_IObjectTransformBody transformBody = new V_ObjectTransformBody(instantiatedTransform.Find("Body"), materialSpriteSheet);
+        unitObject.AddRelatedObject(transformBody);
+
+        V_UnitSkeleton unitSkeleton = new V_UnitSkeleton(1f, transformBody.ConvertBodyLocalPositionToWorldPosition, transformBody.SetBodyMesh);
+        unitObject.AddRelatedObject(unitSkeleton);
+        unitObject.AddActiveLogic(new V_ObjectLogic_SkeletonUpdater(unitSkeleton));
+        V_UnitAnimation unitAnimation = new V_UnitAnimation(unitSkeleton);
+        unitObject.AddRelatedObject(unitAnimation);
+
+        unitObject.AddRelatedObject(new V_IHasWorldPosition_Class(transform.GetPosition));
+
+        return unitObject;
+    }
+}
+
+-------------------------------------------------------------------------------------------------------
+
+	Enemy basics:
+
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using V_AnimationSystem;
+using CodeMonkey.Utils;
+
+/*
+ * Enemy
+ * */
+public class Enemy : MonoBehaviour {
+    
+    public interface IEnemyTargetable {
+        Vector3 GetPosition();
+        void Damage(Enemy attacker);
+    }
+
+    public static List<Enemy> enemyList = new List<Enemy>();
+
+    public static Enemy GetClosestEnemy(Vector3 position, float maxRange) {
+        Enemy closest = null;
+        foreach (Enemy enemy in enemyList) {
+            if (enemy.IsDead()) continue;
+            if (Vector3.Distance(position, enemy.GetPosition()) <= maxRange) {
+                if (closest == null) {
+                    closest = enemy;
+                } else {
+                    if (Vector3.Distance(position, enemy.GetPosition()) < Vector3.Distance(position, closest.GetPosition())) {
+                        closest = enemy;
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+
+
+    public static Enemy Create(Vector3 position) {
+        Transform enemyTransform = Instantiate(GameAssets.i.pfEnemy, position, Quaternion.identity);
+
+        Enemy enemyHandler = enemyTransform.GetComponent<Enemy>();
+
+        return enemyHandler;
+    }
+
+
+    private const float SPEED = 30f;
+
+    private HealthSystem healthSystem;
+    private Enemy_Base enemyBase;
+    private State state;
+    private Vector3 lastMoveDir;
+    private int currentPathIndex;
+    private List<Vector3> pathVectorList;
+    private float pathfindingTimer;
+    private Func<IEnemyTargetable> getEnemyTarget;
+
+    private UnitAnimType idleUnitAnim;
+    private UnitAnimType walkUnitAnim;
+    private UnitAnimType hitUnitAnim;
+    private UnitAnimType attackUnitAnim;
+
+    private enum State {
+        Normal,
+        Attacking,
+        Busy,
+    }
+
+    private void Awake() {
+        enemyList.Add(this);
+        enemyBase = gameObject.GetComponent<Enemy_Base>();
+        healthSystem = new HealthSystem(100);
+        SetStateNormal();
+    }
+
+    private void Start() {
+        /*
+        HealthBar healthBar = HealthBar.Create(transform, new Vector3(0, 9), new Vector3(8, 1), Color.red, UtilsClass.GetColorFromString("4F4F4F"), new HealthBar.Border { color = Color.black, thickness = .4f });
+        healthSystem.OnHealthChanged += (object sender, EventArgs e) => {
+            healthBar.SetSize(healthSystem.GetHealthPercent());
+        };
+        */
+    }
+
+    public void SetGetTarget(Func<IEnemyTargetable> getEnemyTarget) {
+        this.getEnemyTarget = getEnemyTarget;
+    }
+
+    private void Update() {
+        pathfindingTimer -= Time.deltaTime;
+
+        switch (state) {
+        case State.Normal:
+            HandleMovement();
+            FindTarget();
+            break;
+        case State.Attacking:
+            break;
+        case State.Busy:
+            break;
+        }
+    }
+
+    private void FindTarget() {
+        float targetRange = 100f;
+        float attackRange = 15f;
+        if (getEnemyTarget != null) {
+            if (Vector3.Distance(getEnemyTarget().GetPosition(), GetPosition()) < attackRange) {
+                StopMoving();
+                state = State.Attacking;
+                Vector3 attackDir = (getEnemyTarget().GetPosition() - GetPosition()).normalized;
+                enemyBase.PlayAttackAnimation(attackDir, () => {
+                    if (getEnemyTarget() != null) {
+                        getEnemyTarget().Damage(this);
+                    }
+                }, SetStateNormal);
+            } else {
+                if (Vector3.Distance(getEnemyTarget().GetPosition(), GetPosition()) < targetRange) {
+                    if (pathfindingTimer <= 0f) {
+                        pathfindingTimer = .3f;
+                        SetTargetPosition(getEnemyTarget().GetPosition());
+                    }
+                }
+            }
+        }
+    }
+
+    public bool IsDead() {
+        return healthSystem.IsDead();
+    }
+    
+    private void SetStateNormal() {
+        state = State.Normal;
+    }
+
+    private void SetStateAttacking() {
+        state = State.Attacking;
+    }
+
+    public void Damage(IEnemyTargetable attacker) {
+        Vector3 bloodDir = (GetPosition() - attacker.GetPosition()).normalized;
+        Blood_Handler.SpawnBlood(GetPosition(), bloodDir);
+
+        healthSystem.Damage(30);
+        if (IsDead()) {
+            FlyingBody.Create(GameAssets.i.pfEnemyFlyingBody, GetPosition(), bloodDir);
+            Destroy(gameObject);
+        } else {
+            // Knockback
+            transform.position += bloodDir * 5f;
+            if (hitUnitAnim != null) {
+                state = State.Busy;
+                enemyBase.PlayHitAnimation(bloodDir * (Vector2.one * -1f), SetStateNormal);
+            }
+        }
+    }
+
+    private void HandleMovement() {
+        if (pathVectorList != null) {
+            Vector3 targetPosition = pathVectorList[currentPathIndex];
+            if (Vector3.Distance(transform.position, targetPosition) > 1f) {
+                Vector3 moveDir = (targetPosition - transform.position).normalized;
+
+                float distanceBefore = Vector3.Distance(transform.position, targetPosition);
+                enemyBase.PlayMoveAnim(moveDir);
+                transform.position = transform.position + moveDir * SPEED * Time.deltaTime;
+            } else {
+                currentPathIndex++;
+                if (currentPathIndex >= pathVectorList.Count) {
+                    StopMoving();
+                    enemyBase.PlayIdleAnim();
+                }
+            }
+        } else {
+            enemyBase.PlayIdleAnim();
+        }
+    }
+
+    private void StopMoving() {
+        pathVectorList = null;
+    }
+
+    public void SetTargetPosition(Vector3 targetPosition) {
+        currentPathIndex = 0;
+        //pathVectorList = GridPathfinding.instance.GetPathRouteWithShortcuts(GetPosition(), targetPosition).pathVectorList;
+        pathVectorList = new List<Vector3> { targetPosition };
+        if (pathVectorList != null && pathVectorList.Count > 1) {
+            pathVectorList.RemoveAt(0);
+        }
+    }
+
+    public Vector3 GetPosition() {
+        return transform.position;
+    }
+        
+}
+
+-------------------------------------------------------------------------------------------
+
+	Enemy moves:
+
+using System;
+using UnityEngine;
+using V_AnimationSystem;
+using CodeMonkey.Utils;
+
+/*
+ * Enemy Base Class
+ * */
+public class Enemy_Base : MonoBehaviour {
+    
+    #region BaseSetup
+    private V_UnitSkeleton unitSkeleton;
+    private V_UnitAnimation unitAnimation;
+    private AnimatedWalker animatedWalker;
+
+    private void Start() {
+        Transform bodyTransform = transform.Find("Body");
+        unitSkeleton = new V_UnitSkeleton(1f, bodyTransform.TransformPoint, (Mesh mesh) => bodyTransform.GetComponent<MeshFilter>().mesh = mesh);
+        unitAnimation = new V_UnitAnimation(unitSkeleton);
+        
+        UnitAnimType idleUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Idle");
+        UnitAnimType walkUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Walk");
+        UnitAnimType hitUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Hit");
+
+        animatedWalker = new AnimatedWalker(unitAnimation, idleUnitAnim, walkUnitAnim, 1f, 1f);
+    }
+
+    private void Update() {
+        unitSkeleton.Update(Time.deltaTime);
+    }
+
+    public V_UnitAnimation GetUnitAnimation() {
+        return unitAnimation;
+    }
+    #endregion
+
+
+    public void PlayMoveAnim(Vector3 moveDir) {
+        animatedWalker.SetMoveVector(moveDir);
+    }
+
+    public void PlayIdleAnim() {
+        animatedWalker.SetMoveVector(Vector3.zero);
+    }
+    
+    public bool IsPlayingPunchAnimation() {
+        return unitAnimation.GetActiveAnimType().GetName() == "dBareHands_PunchQuick";
+    }
+    
+    public void PlayPunchAnimation(Vector3 dir, Action<Vector3> onHit, Action onAnimComplete) {
+        unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_PunchQuick"), dir, 1f, (UnitAnim unitAnim2) => {
+            if (onAnimComplete != null) onAnimComplete();
+        }, (string trigger) => {
+            // HIT = HandR
+            // HIT2 = HandL
+            string hitBodyPartName = trigger == "HIT" ? "HandR" : "HandL";
+            Vector3 impactPosition = unitSkeleton.GetBodyPartPosition(hitBodyPartName);
+            if (onHit != null) {
+                onHit(impactPosition);
+            }
+        }, null);
+    }
+    
+    public void PlayAttackAnimation(Vector3 dir, Action onHit, Action onAnimComplete) {
+        unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_Punch"), dir, 1f, (UnitAnim unitAnim2) => {
+            if (onAnimComplete != null) onAnimComplete();
+        }, (string trigger) => {
+            if (onHit != null) {
+                onHit();
+            }
+        }, null);
+    }
+    
+    public void PlayHitAnimation(Vector3 dir, Action onAnimComplete) {
+        unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_Hit"), dir, 1f, (UnitAnim unitAnim2) => {
+            if (onAnimComplete != null) onAnimComplete();
+        }, (string trigger) => {
+        }, null);
+    }
+    
+    public void PlayDodgeAnimation(Vector3 dir) {
+        unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dSwordShield_Roll"), dir, 1f, null, null, null);
+    }
+
+    public Vector3 GetHandLPosition() {
+        return unitSkeleton.GetBodyPartPosition("HandL");
+    }
+
+}
+
+-------------------------------------------------------------------------------------------
+
+	EnemyHandler:
+
+/* 
+    ------------------- Code Monkey -------------------
+
+    Thank you for downloading this package
+    I hope you find it useful in your projects
+    If you have any questions let me know
+    Cheers!
+
+               unitycodemonkey.com
+    --------------------------------------------------
+ */
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using V_AnimationSystem;
+using CodeMonkey.Utils;
+using CodeMonkey;
+using GridPathfindingSystem;
+
+public class EnemyHandler : MonoBehaviour {
+
+    public interface IEnemyTargetable {
+        Vector3 GetPosition();
+        void Damage(EnemyHandler attacker);
+    }
+
+    public static List<EnemyHandler> enemyHandlerList = new List<EnemyHandler>();
+
+    public static EnemyHandler GetClosestEnemy(Vector3 position, float maxRange) {
+        EnemyHandler closest = null;
+        foreach (EnemyHandler enemyHandler in enemyHandlerList) {
+            if (enemyHandler.IsDead()) continue;
+            if (Vector3.Distance(position, enemyHandler.GetPosition()) <= maxRange) {
+                if (closest == null) {
+                    closest = enemyHandler;
+                } else {
+                    if (Vector3.Distance(position, enemyHandler.GetPosition()) < Vector3.Distance(position, closest.GetPosition())) {
+                        closest = enemyHandler;
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+
+
+    public static EnemyHandler Create(Vector3 position) {
+        Transform enemyTransform = Instantiate(GameAssets.i.pfEnemy, position, Quaternion.identity);
+
+        EnemyHandler enemyHandler = enemyTransform.GetComponent<EnemyHandler>();
+
+        return enemyHandler;
+    }
+
+
+    private const float speed = 30f;
+
+    private V_UnitSkeleton unitSkeleton;
+    private V_UnitAnimation unitAnimation;
+    private AnimatedWalker animatedWalker;
+    private int currentPathIndex;
+    private List<Vector3> pathVectorList;
+    private int health;
+    private float pathfindingTimer;
+    private Func<IEnemyTargetable> getEnemyTarget;
+
+    private UnitAnimType idleUnitAnim;
+    private UnitAnimType walkUnitAnim;
+    private UnitAnimType hitUnitAnim;
+    private UnitAnimType attackUnitAnim;
+
+    private State state;
+    private enum State {
+        Normal,
+        Busy
+    }
+
+    private void Awake() {
+        enemyHandlerList.Add(this);
+        health = 40;
+        state = State.Normal;
+    }
+
+    private void Start() {
+        Transform bodyTransform = transform.Find("Body");
+        unitSkeleton = new V_UnitSkeleton(1f, bodyTransform.TransformPoint, (Mesh mesh) => bodyTransform.GetComponent<MeshFilter>().mesh = mesh);
+        unitAnimation = new V_UnitAnimation(unitSkeleton);
+        
+        idleUnitAnim = UnitAnimType.GetUnitAnimType("dMinion_Idle");
+        walkUnitAnim = UnitAnimType.GetUnitAnimType("dMinion_Walk");
+        hitUnitAnim = null;
+        attackUnitAnim = UnitAnimType.GetUnitAnimType("dMinion_Attack");
+        
+        idleUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Idle");
+        walkUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Walk");
+        hitUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Hit");
+        attackUnitAnim = UnitAnimType.GetUnitAnimType("dBareHands_Punch");
+
+        //animatedWalker = new AnimatedWalker(unitAnimation, UnitAnimType.GetUnitAnimType("dMinion_Idle"), UnitAnimType.GetUnitAnimType("dMinion_Walk"), 1f, 1f);
+        animatedWalker = new AnimatedWalker(unitAnimation, idleUnitAnim, walkUnitAnim, 1f, 1f);
+
+        bodyTransform.GetComponent<MeshRenderer>().material = GameAssets.i.m_MarineSpriteSheet;
+        //unitAnimation.PlayAnimForced(UnitAnimType.GetUnitAnimType("dBareHands_AttackPose"), 1f, null, null, null);
+        //state = State.Busy;
+    }
+
+    public void SetGetTarget(Func<IEnemyTargetable> getEnemyTarget) {
+        this.getEnemyTarget = getEnemyTarget;
+    }
+
+    private void Update() {
+        unitSkeleton.Update(Time.deltaTime);
+        pathfindingTimer -= Time.deltaTime;
+
+        switch (state) {
+        case State.Normal:
+            HandleMovement();
+            FindTarget();
+            break;
+        case State.Busy:
+            break;
+        }
+    }
+
+    private void FindTarget() {
+        float targetRange = 100f;
+        float attackRange = 15f;
+        if (getEnemyTarget != null) {
+            if (Vector3.Distance(getEnemyTarget().GetPosition(), GetPosition()) < attackRange) {
+                StopMoving();
+                state = State.Busy;
+                unitAnimation.PlayAnimForced(attackUnitAnim, 1f, (UnitAnim unitAnim) => {
+                    // Attack complete
+                    state = State.Normal;
+                }, (string trigger) => {
+                    // Damage Player
+                    getEnemyTarget().Damage(this);
+                }, null);
+            } else {
+                if (Vector3.Distance(getEnemyTarget().GetPosition(), GetPosition()) < targetRange) {
+                    if (pathfindingTimer <= 0f) {
+                        pathfindingTimer = .3f;
+                        SetTargetPosition(getEnemyTarget().GetPosition());
+                    }
+                }
+            }
+        }
+    }
+
+    public bool IsDead() {
+        return health <= 0;
+    }
+
+    public Vector3 GetPosition() {
+        return transform.position;
+    }
+
+    public void Damage(IEnemyTargetable attacker) {
+        Vector3 bloodDir = (GetPosition() - attacker.GetPosition()).normalized;
+        //Blood_Handler.SpawnBlood(GetPosition(), bloodDir);
+        health--;
+        if (IsDead()) {
+            FlyingBody.Create(GameAssets.i.pfEnemyFlyingBody, GetPosition(), bloodDir);
+            Destroy(gameObject);
+        } else {
+            // Knockback
+            transform.position += bloodDir * 5f;
+            if (hitUnitAnim != null) {
+                state = State.Busy;
+                unitAnimation.PlayAnimForced(hitUnitAnim, bloodDir * (Vector2.one * -1f), 1f, (UnitAnim unitAnim) => {
+                    state = State.Normal;
+                }, null, null);
+            }
+        }
+    }
+
+    private void HandleMovement() {
+        if (pathVectorList != null) {
+            Vector3 targetPosition = pathVectorList[currentPathIndex];
+            if (Vector3.Distance(transform.position, targetPosition) > 1f) {
+                Vector3 moveDir = (targetPosition - transform.position).normalized;
+
+                float distanceBefore = Vector3.Distance(transform.position, targetPosition);
+                animatedWalker.SetMoveVector(moveDir);
+                transform.position = transform.position + moveDir * speed * Time.deltaTime;
+            } else {
+                currentPathIndex++;
+                if (currentPathIndex >= pathVectorList.Count) {
+                    StopMoving();
+                    animatedWalker.SetMoveVector(Vector3.zero);
+                }
+            }
+        } else {
+            animatedWalker.SetMoveVector(Vector3.zero);
+        }
+    }
+
+    private void StopMoving() {
+        pathVectorList = null;
+    }
+
+    public void SetTargetPosition(Vector3 targetPosition) {
+        currentPathIndex = 0;
+        pathVectorList = GridPathfinding.instance.GetPathRouteWithShortcuts(GetPosition(), targetPosition).pathVectorList;
+        if (pathVectorList != null && pathVectorList.Count > 1) {
+            pathVectorList.RemoveAt(0);
+        }
+    }
+
+}
+
+
+	
+
+
