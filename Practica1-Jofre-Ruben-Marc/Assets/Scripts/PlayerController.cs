@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     Animator anim;
 
-    private float velocity = 2f;
+    [SerializeField] float velocity = 2f;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
 
