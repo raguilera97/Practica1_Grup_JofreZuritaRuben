@@ -3313,8 +3313,8 @@ TextureImporter:
       name: Overworld_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 560
+        x: 169
+        y: 311
         width: 16
         height: 16
       alignment: 0
@@ -8748,7 +8748,12 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: 0, y: -3}
+        - {x: 0, y: -8}
+        - {x: 0, y: -8}
+        - {x: 5, y: -8}
+        - {x: 5, y: -3}
       tessellationDetail: 0
       bones: []
       spriteID: b3f36319077bb2560800000000000000
@@ -8790,7 +8795,11 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -5, y: -3}
+        - {x: -5, y: -8}
+        - {x: 0, y: -8}
+        - {x: 0, y: -3}
       tessellationDetail: 0
       bones: []
       spriteID: 49d9557fef27b9310800000000000000
