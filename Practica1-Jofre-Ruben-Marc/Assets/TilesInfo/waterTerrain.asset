@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b56676982c360d94897a5cff6f9f4352, type: 3}
+  m_Name: waterTerrain
+  m_EditorClassIdentifier: 
+  tiles:
+  - {fileID: 11400000, guid: bf12d147521184d4fba469c3b9ebcfae, type: 2}
+  - {fileID: 11400000, guid: dd07bae6d4b5fd6499febb882cf78bcf, type: 2}
+  - {fileID: 11400000, guid: 92a33d5744b0a494cb5fac6d5dcc560d, type: 2}
+  - {fileID: 11400000, guid: b19015c074e2cf24aa37f9cce8f83ea1, type: 2}
+  - {fileID: 11400000, guid: 0a81c2d467d8fb740a2cae998c4e75a0, type: 2}
+  - {fileID: 11400000, guid: 681bc12677cb8b24b95f9664ce8df7d7, type: 2}
+  - {fileID: 11400000, guid: 4cba6231a47f68549b8f17214d5278c0, type: 2}
+  - {fileID: 11400000, guid: 9de33eda511865542b2c8838e5521917, type: 2}
+  - {fileID: 11400000, guid: 286da98e6a8b77548b98272cceb4a10b, type: 2}
+  - {fileID: 11400000, guid: 763dd2758142219488407a1641122055, type: 2}
+  - {fileID: 11400000, guid: d0d285e3c2ae1e145a3b7d41bc5e9a14, type: 2}
+  - {fileID: 11400000, guid: 251889441d2a75749bfd4ac8fe2304dd, type: 2}
+  - {fileID: 11400000, guid: db4ee0c01c1ab7e4f87cec6bbf602186, type: 2}
+  - {fileID: 11400000, guid: ad18df8fe25ddf247b1f07018a05d159, type: 2}
+  - {fileID: 11400000, guid: 43f1c2abc12a97d46a94e3dddcb73b25, type: 2}
+  - {fileID: 11400000, guid: 54a14e298f7e8ef408acc68b578b2122, type: 2}
+  - {fileID: 11400000, guid: 0bb857849b3fa0f49a85f83479bfa952, type: 2}
+  - {fileID: 11400000, guid: c1620dc313c453f4a8fde9fe1b6bde32, type: 2}
+  - {fileID: 11400000, guid: f38f4d109a15f344ebb65c72f6c50315, type: 2}
+  - {fileID: 11400000, guid: 872b7be0fd131d549a0e78f9247825f7, type: 2}
+  - {fileID: 11400000, guid: f9d0097095f4a544eb229f480161e5b4, type: 2}
+  - {fileID: 11400000, guid: a0a03c87dbbbb394cb517e40ce9910c1, type: 2}
+  - {fileID: 11400000, guid: db8dfd2dfd8bfba4098129ac3af44478, type: 2}
+  - {fileID: 11400000, guid: ad5b7bec05153ef46bd649af85395d69, type: 2}
+  - {fileID: 11400000, guid: ae29955a361055a45b45a3d4614ce3da, type: 2}
+  - {fileID: 11400000, guid: d66b02a9a12aaea4098ba901357977a5, type: 2}
+  - {fileID: 11400000, guid: 251a059b1df63704eadac4764b166ea3, type: 2}
+  - {fileID: 11400000, guid: 8f9486c9111a88b4ea06351c75cbf381, type: 2}
+  - {fileID: 11400000, guid: 957fd456eec94034fb1c4b23a94512f5, type: 2}
+  - {fileID: 11400000, guid: dfafecb5a52b3dd42b492ba028fa14b7, type: 2}
+  - {fileID: 11400000, guid: 3ba8b37f06dd5d344a412a2041da4c3c, type: 2}
+  - {fileID: 11400000, guid: 05b0c88823f336541b4327be7d7eea58, type: 2}
+  - {fileID: 11400000, guid: 3dab53916f15df14daac15e0c4cd622e, type: 2}
+  - {fileID: 11400000, guid: aeec8207dac44064f8a8ec260f941d79, type: 2}
+  - {fileID: 11400000, guid: 9b797424c5d3fe346bb4ff03361c2b61, type: 2}
+  - {fileID: 11400000, guid: 785f7de25fe6d014e877196c50f7c9bc, type: 2}
+  - {fileID: 11400000, guid: 75ff10f7b340ae147b39ca82d95e9950, type: 2}
+  - {fileID: 11400000, guid: 800f1a5c98b9ecd4383d4952596548f4, type: 2}
+  - {fileID: 11400000, guid: bf13834bee08d954da891020b56c1ff5, type: 2}
+  - {fileID: 11400000, guid: 85e084db47de4494f85798dea48ca5b2, type: 2}
+  - {fileID: 11400000, guid: a17b5a1b5cb115742831cc526599dc9f, type: 2}
+  - {fileID: 11400000, guid: 4211a26b581daf74d8416bd8b1cd8133, type: 2}
+  - {fileID: 11400000, guid: 6a168748ff159c847b7aaede7692d94b, type: 2}
+  - {fileID: 11400000, guid: 662e1d2935a55e949b1a3218dbccc684, type: 2}
+  - {fileID: 11400000, guid: ea4600e5ba170b840a9964cd76aa0a12, type: 2}
+  - {fileID: 11400000, guid: c6f3d30aba8e299479c84efb298e5699, type: 2}
+  - {fileID: 11400000, guid: 25386b8d7bf76b14b834a263f93c937c, type: 2}
+  - {fileID: 11400000, guid: 53740563b2a9b804e9d4b087881896e4, type: 2}
+  - {fileID: 11400000, guid: b31fd811745d78041801bfa0fe35219e, type: 2}
+  - {fileID: 11400000, guid: d2c90c351fa4c62488bd05537ab373cc, type: 2}
+  - {fileID: 11400000, guid: 54e468df61634234996314f71fa2dabf, type: 2}
+  velocityMultiplier: 0
+  isTerrainCombat: 0

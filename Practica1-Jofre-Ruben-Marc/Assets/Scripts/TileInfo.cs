@@ -9,4 +9,5 @@ public class TileInfo : ScriptableObject
     public TileBase[] tiles;
 
     public float velocityMultiplier;
+    public bool isTerrainCombat;
 }
