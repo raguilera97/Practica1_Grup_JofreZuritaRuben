@@ -39,7 +39,7 @@ public class TilemapManager : MonoBehaviour
 
             TileInfo clickedTileInfo = infoFromTiles[clickedTile];
 
-            Debug.Log(clickedTile.name + " Speed Multiplaier: " + clickedTileInfo.velocityMultiplier);
+            Debug.Log(clickedTile.name + " Speed Multiplaier: " + clickedTileInfo.velocityMultiplier + ", Is Terrain Combat: " + clickedTileInfo.isTerrainCombat);
         }
     }
 
