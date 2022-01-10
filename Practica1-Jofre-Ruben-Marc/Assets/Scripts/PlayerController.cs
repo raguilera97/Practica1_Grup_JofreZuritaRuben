@@ -5,21 +5,26 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] UI_Inventory uiInventory;
     Rigidbody2D rb;
     Animator anim;
 
     [SerializeField] float velocity = 2f;
+    
+    private Inventory inventory;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
 
 
     void Start()
     {
+        inventory = new Inventory();
+        uiInventory.SetInventory(inventory);
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
-    
+
     void Update()
     {
         CheckInput();
@@ -35,12 +40,12 @@ public class PlayerController : MonoBehaviour
 
         anim.SetBool("isRunning", Math.Abs(xInput) >= 0.1f || Math.Abs(yInput) >= 0.1f);
 
-        if(CheckDirection() == Enums.Direction.West)
+        if (CheckDirection() == Enums.Direction.West)
         {
             anim.SetFloat("LookX", -1.0f);
             anim.SetFloat("LookY", 0.0f);
         }
-        else if(CheckDirection() == Enums.Direction.East)
+        else if (CheckDirection() == Enums.Direction.East)
         {
             anim.SetFloat("LookX", 1.0f);
             anim.SetFloat("LookY", 0.0f);
@@ -59,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyMovement()
     {
-        rb.velocity = new Vector2(xInput * velocity, yInput*velocity);
+        rb.velocity = new Vector2(xInput * velocity, yInput * velocity);
     }
 
     private void CheckInput()
@@ -71,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
     public Enums.Direction CheckDirection()
     {
-        if(yInput == -1)
+        if (yInput == -1)
         {
             dir = Enums.Direction.South;
         }
