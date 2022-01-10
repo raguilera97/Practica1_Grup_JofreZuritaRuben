@@ -147,6 +147,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiInventory: {fileID: 5945441801890577527, guid: 2667be175657c36449bd974c9fa52099, type: 3}
   velocity: 2
+  interactableObject:
+    serializedVersion: 2
+    m_Bits: 256
+  pressF: {fileID: 0}
 --- !u!95 &5957260236749014851
 Animator:
   serializedVersion: 3

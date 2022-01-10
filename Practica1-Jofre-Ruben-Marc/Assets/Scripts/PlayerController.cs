@@ -8,12 +8,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] UI_Inventory uiInventory;
     Rigidbody2D rb;
     Animator anim;
+    new Collider2D collider;
 
     [SerializeField] float velocity = 2f;
-    
+    [SerializeField] LayerMask interactableObject;
+    [SerializeField] GameObject pressE;
+
     private Inventory inventory;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
+    
+
 
 
     void Start()
@@ -30,6 +35,7 @@ public class PlayerController : MonoBehaviour
         CheckInput();
         ApplyMovement();
         UpdateAnimation();
+        CheckInteract();
     }
 
 
@@ -71,8 +77,45 @@ public class PlayerController : MonoBehaviour
     {
         xInput = Input.GetAxisRaw("Horizontal");
         yInput = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact();
+        }
     }
 
+    private void Interact()
+    {
+        Vector3 faceDir = new Vector2(anim.GetFloat("LookX"), anim.GetFloat("LookY"));
+
+        Vector2 interactPos = transform.position + faceDir;
+
+        Debug.DrawLine(transform.position, interactPos, Color.cyan, 0.5f);
+
+        Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.3f, interactableObject);
+
+
+
+
+        if (collider != null)
+        {
+            collider.GetComponent<Interactable>().Interact();
+        }
+    }
+
+    private void CheckInteract()
+    {
+        collider = Physics2D.OverlapCircle(transform.position, 0.5f, interactableObject);
+
+        if (collider)
+        {
+            pressE.SetActive(true);
+        }
+        else
+        {
+            pressE.SetActive(false);
+        }
+    }
 
     public Enums.Direction CheckDirection()
     {
