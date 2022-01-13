@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: b4ec83e244121f04391a0d4bf8a638ab
+=======
+<<<<<<< HEAD
+guid: a9f053913c2eea54db855edba062f183
+=======
+guid: 72b5e7e06d6fe9d4d91dbf7c7d378cdf
+>>>>>>> Disseny_Tilemap
+>>>>>>> ee715f559d34140c59754c7f408ef1ba13176d8d
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

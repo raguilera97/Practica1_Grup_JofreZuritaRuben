@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b56676982c360d94897a5cff6f9f4352, type: 3}
+  m_Name: roadTerrain
+  m_EditorClassIdentifier: 
+  tiles:
+  - {fileID: 11400000, guid: 6a3a7cb33eb08104aa8335c259f2fd07, type: 2}
+  - {fileID: 11400000, guid: b5e668b914ab0eb48868fdcc25158e99, type: 2}
+  - {fileID: 11400000, guid: 0edf6151f99846f43a8b7eccbb3fa540, type: 2}
+  - {fileID: 11400000, guid: 81f2c039b9fb8604b942a3a898a980bb, type: 2}
+  - {fileID: 11400000, guid: d2f84f65d334e82448db43e00197d148, type: 2}
+  - {fileID: 11400000, guid: 7f6515321ef2775479e44ea624ad2e5e, type: 2}
+  - {fileID: 11400000, guid: 3d90fe2aae52d9547ad527e4089e702e, type: 2}
+  - {fileID: 11400000, guid: c812991637caf014b81c607644478fc5, type: 2}
+  - {fileID: 11400000, guid: 2476a897de7c5a04ebd1709d54a8bb05, type: 2}
+  - {fileID: 11400000, guid: bb6ce202cb7040f458c9479372b325b2, type: 2}
+  - {fileID: 11400000, guid: 3afc6b1ec90ce3547968407d84e894ce, type: 2}
+  - {fileID: 11400000, guid: 298575a2211c8c24f9239784040867c1, type: 2}
+  - {fileID: 11400000, guid: cca8ef76b7ad6bd45843fe7340b26077, type: 2}
+  - {fileID: 11400000, guid: 2d25b8035c896894a8e4640e76d83774, type: 2}
+  - {fileID: 11400000, guid: f602a7003d25fcd46afd3bf154e8b375, type: 2}
+  velocityMultiplier: 0
+  isTerrainCombat: 0
