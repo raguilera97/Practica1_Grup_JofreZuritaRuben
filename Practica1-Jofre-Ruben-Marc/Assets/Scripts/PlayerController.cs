@@ -17,9 +17,6 @@ public class PlayerController : MonoBehaviour
     private Inventory inventory;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
-    
-
-
 
     void Start()
     {
