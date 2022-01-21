@@ -5,28 +5,42 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] UI_Inventory uiInventory;
+    
     Rigidbody2D rb;
     Animator anim;
     new Collider2D collider;
 
+    [SerializeField] UI_Inventory uiInventory;
     [SerializeField] float velocity = 2f;
     [SerializeField] LayerMask interactableObject;
     [SerializeField] GameObject pressE;
+    [SerializeField] GameObject uiPlayerInvetory;
 
-    private Inventory inventory;
+    private bool inventoryOpened;
+    public Inventory inventory;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
-    
+    public float damage = 5f;
+    public float atackVelocity = 3f;
+    public float maxHealth = 100f;
+    public float currentHealt;
+    public int level = 3;
+    public float armor = 0f;
 
 
 
     void Start()
     {
+        currentHealt = maxHealth;
         inventory = new Inventory();
-        uiInventory.SetInventory(inventory);
+        
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        inventory.AddItem(new Item { itemType = Item.ItemType.barbarianHelmet, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.clippedShotgun, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.coins, amount = 100 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.coins, amount = 100 });
+
     }
 
 
@@ -81,7 +95,35 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
+            
         }
+        else if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (!inventoryOpened)
+            {
+                inventoryOpened = true;
+                OpenInventory();
+            }
+            else
+            {
+                inventoryOpened = false;
+                CloseInventory();
+            }
+            
+        }
+        
+    }
+
+    private void CloseInventory()
+    {
+        uiPlayerInvetory.SetActive(false);
+    }
+
+    private void OpenInventory()
+    {
+        uiPlayerInvetory.SetActive(true);
+        uiInventory.SetInventory(inventory);
+        
     }
 
     private void Interact()

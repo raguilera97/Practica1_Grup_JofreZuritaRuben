@@ -145,12 +145,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84a5c01d1bacc5143a21a2ad8e4d5290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiInventory: {fileID: 5945441801890577527, guid: 2667be175657c36449bd974c9fa52099, type: 3}
+  uiInventory: {fileID: 0}
   velocity: 2
   interactableObject:
     serializedVersion: 2
     m_Bits: 256
-  pressF: {fileID: 0}
+  pressE: {fileID: 0}
 --- !u!95 &5957260236749014851
 Animator:
   serializedVersion: 3
