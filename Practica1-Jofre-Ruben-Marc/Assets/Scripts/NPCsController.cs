@@ -10,7 +10,7 @@ public class NPCsController : MonoBehaviour, Interactable
     private Rigidbody2D myRigidbody;
     private Animator anim;
     public Collider2D bounds;
-    private bool canMove = true;
+    private bool playerInRange = false;
     public Dialogue dialogue;
 
     public void Interact()
@@ -30,8 +30,11 @@ public class NPCsController : MonoBehaviour, Interactable
     // Update is called once per frame
     void Update()
     {
-        
-        Move();   
+        if (!playerInRange)
+        {
+            Move();
+        }
+            
     }
 
     private void Move()
@@ -90,4 +93,19 @@ public class NPCsController : MonoBehaviour, Interactable
 
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.isTrigger)
+        {
+            playerInRange = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.isTrigger)
+        {
+            playerInRange = false;
+        }
+    }
 }
