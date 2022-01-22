@@ -680,12 +680,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797a5ecd1c29f514e93f82c39989fd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 4
   bounds: {fileID: 2047590156}
   dialogue:
-    name: JAJAJA
+    name: "El Cu\xF1ao"
     sentences:
-    - ulaaaa
+    - Tengo tantas ganas
+    - De ganas tengo
+    - tanga ganas tengo
 --- !u!61 &526544270
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -727,7 +729,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.75
 --- !u!1 &662528875
 GameObject:
   m_ObjectHideFlags: 0
