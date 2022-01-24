@@ -20,16 +20,16 @@ public class ItemSlotTemplate : MonoBehaviour
                     if(item.amount > 1 && item.recuperationHealth > 0)
                     {
                         
-                        if(player.currentHealt < player.maxHealth)
+                        if(player.currentHealth < player.maxHealth)
                         {
                             item.amount -= 1;
-                            if (player.maxHealth - player.currentHealt < item.recuperationHealth)
+                            if (player.maxHealth - player.currentHealth < item.recuperationHealth)
                             {
-                                player.currentHealt = player.maxHealth;
+                                player.currentHealth = player.maxHealth;
                             }
                             else
                             {
-                                player.currentHealt += item.recuperationHealth;
+                                player.currentHealth += item.recuperationHealth;
                             }
                         }
                         else
@@ -40,15 +40,15 @@ public class ItemSlotTemplate : MonoBehaviour
                     //objeto puede recuperar vida y solo tienes 1 en el inventario
                     else if(item.amount == 1 && item.recuperationHealth > 0)
                     {
-                        if (player.currentHealt < player.maxHealth)
+                        if (player.currentHealth < player.maxHealth)
                         {
-                            if (player.maxHealth - player.currentHealt > item.recuperationHealth)
+                            if (player.maxHealth - player.currentHealth > item.recuperationHealth)
                             {
-                                player.currentHealt = player.maxHealth;
+                                player.currentHealth = player.maxHealth;
                             }
                             else
                             {
-                                player.currentHealt += item.recuperationHealth;
+                                player.currentHealth += item.recuperationHealth;
                             }
                             ui.inventory.RemoveItem(item);
                         }
@@ -82,7 +82,6 @@ public class ItemSlotTemplate : MonoBehaviour
         {
             if (item.getID() == idItem)
             {
-                Debug.Log(item.getID());
                 ui.inventory.RemoveItem(item);
                 ui.RefreshInventoryItems();
                 Destroy(this.gameObject);
@@ -106,4 +105,55 @@ public class ItemSlotTemplate : MonoBehaviour
             }
         }
     }
+
+    public void TryBuyItem()
+    {
+        int coins = 0;
+        foreach (Item item in player.inventory.GetItemList())
+        {
+            if(item.itemType == Item.ItemType.coins)
+            {
+                coins = item.amount;
+                break;
+            }
+        }
+
+        foreach (Item item in ui.inventory.GetItemList())
+        {
+            if(item.getID() == idItem)
+            {
+                int cost = item.GetCost();
+
+                if(cost <= coins && item.amount > 0)
+                {
+                    Item newItem = new Item { itemType = item.itemType, amount = 1 };
+                    player.inventory.AddItem(newItem);
+                    item.amount--;
+                    ui.RefreshInventoryShopItems();
+                    foreach (Item itemPlayer in player.inventory.GetItemList())
+                    {
+                        if (itemPlayer.itemType == Item.ItemType.coins)
+                        {
+                            if(itemPlayer.amount - cost == 0)
+                            {
+                                player.inventory.RemoveItem(itemPlayer);
+                            }
+                            else
+                            {
+                                itemPlayer.amount = itemPlayer.amount - cost;
+                            }
+                            break;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    Debug.Log("No se puede comprar");
+                }
+            }
+            
+        }
+    }
+
 }

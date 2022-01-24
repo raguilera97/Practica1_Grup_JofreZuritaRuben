@@ -8,6 +8,7 @@ public class Chest : MonoBehaviour, Interactable
     [SerializeField] UI_Inventory uiInventory;
     [SerializeField] GameObject uiChestInventory;
     [SerializeField] List<Item> chestitems = new List<Item>();
+    [SerializeField] PlayerController pla;
 
     private bool chestOpen = false;
     private Inventory chestInventory;
@@ -27,6 +28,7 @@ public class Chest : MonoBehaviour, Interactable
         anim.SetTrigger("Open");
         if (chestOpen)
         {
+            pla.otherOpened = false;
             chestOpen = false;
             uiChestInventory.SetActive(false);
             Time.timeScale = 1f;
@@ -35,6 +37,7 @@ public class Chest : MonoBehaviour, Interactable
 
     public void OpenChest()
     {
+        pla.otherOpened = true;
         if (!chestOpen)
         {
             chestOpen = true;

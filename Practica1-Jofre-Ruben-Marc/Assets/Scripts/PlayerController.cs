@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask interactableObject;
     [SerializeField] GameObject pressE;
     [SerializeField] GameObject uiPlayerInvetory;
+    [SerializeField] HealthBar healthBar;
 
     private bool inventoryOpened;
     public Inventory inventory;
@@ -23,15 +24,17 @@ public class PlayerController : MonoBehaviour
     public float damage = 5f;
     public float atackVelocity = 3f;
     public float maxHealth = 100f;
-    public float currentHealt;
-    public int level = 3;
+    public float currentHealth;
     public float armor = 0f;
+    public bool otherOpened = false;
 
 
 
     void Start()
     {
-        currentHealt = maxHealth;
+        currentHealth = maxHealth;
+
+        healthBar.SetMaxHealt(maxHealth);
         inventory = new Inventory();
         
         rb = GetComponent<Rigidbody2D>();
@@ -97,7 +100,7 @@ public class PlayerController : MonoBehaviour
             Interact();
             
         }
-        else if (Input.GetKeyDown(KeyCode.I))
+        else if (Input.GetKeyDown(KeyCode.I) && !otherOpened)
         {
             if (!inventoryOpened)
             {

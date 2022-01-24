@@ -28,6 +28,41 @@ public class UI_Inventory : MonoBehaviour
         this.inventory = inventory;
         RefreshInventoryItems();
     }
+    public void SetShop(Inventory inventory)
+    {
+        this.inventory = inventory;
+        RefreshInventoryShopItems();
+    }
+
+    public void RefreshInventoryShopItems()
+    {
+        foreach (Transform child in content)
+        {
+            if (child == itemSlotTamplate) continue;
+            Destroy(child.gameObject);
+        }
+
+
+
+        foreach (Item item in inventory.GetItemList())
+        {
+            RectTransform itemSlotRectTransform = Instantiate(itemSlotTamplate, content).GetComponent<RectTransform>();
+            itemSlotRectTransform.gameObject.SetActive(true);
+
+            itemSlotRectTransform.GetComponent<ItemSlotTemplate>().idItem = item.getID();
+
+            Image image = itemSlotRectTransform.Find("Image").GetComponent<Image>();
+            image.sprite = item.GetSprite();
+            image.SetNativeSize();
+            TextMeshProUGUI text = itemSlotRectTransform.Find("Name").GetComponent<TextMeshProUGUI>();
+            text.SetText(item.GetName());
+            TextMeshProUGUI price = itemSlotRectTransform.Find("Price").GetComponent<TextMeshProUGUI>();
+            price.SetText(item.GetCost().ToString() + "€");
+            TextMeshProUGUI textAmount = itemSlotRectTransform.Find("amountText").GetComponent<TextMeshProUGUI>();
+            textAmount.SetText(item.amount.ToString());
+          
+        }
+    }
 
     public void RefreshInventoryItems()
     {

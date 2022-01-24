@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &458872446318918144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 458872446318918150}
+  - component: {fileID: 458872446318918145}
+  m_Layer: 0
+  m_Name: ItemAssets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &458872446318918150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458872446318918144}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1217.4161, y: 326.25806, z: -64.26576}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &458872446318918145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458872446318918144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796c8036742ad924eaa06f77357c4277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chesse: {fileID: -8344287093449111709, guid: 226a7ef72acd0a94f8d7b48c7c970db6, type: 3}
+  barbarianHelmet: {fileID: 2877691487320728769, guid: 00a58f179bd1d8d499618f673cab7354, type: 3}
+  clippedShotgun: {fileID: -7579322072880458250, guid: 3385bd89534435f4eabcfc10256e7faa, type: 3}
+  noFingerMittens: {fileID: 1759518526593463388, guid: f4826a8e3786cab4e875040ed7e47b04, type: 3}
+  coins: {fileID: 3974795861403701185, guid: 5c4c11a930c5c9e49bdbe1cc5f309b59, type: 3}
+  nameCheese: Cheese
+  namebarbarianHelmet: Barbarian Helmet
+  nameclippedShotgun: Clipped Shotgun
+  namenoFingerMittens: Finger Mittens
+  namecoins: Coins

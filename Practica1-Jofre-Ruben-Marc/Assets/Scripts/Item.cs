@@ -23,6 +23,18 @@ public class Item
     public float recuperationHealth = 0;
     public float armor = 0;
 
+    public int GetCost()
+    {
+        switch (itemType)
+        {
+            default:
+            case ItemType.barbarianHelmet: return 100;
+            case ItemType.cheese: return 5;
+            case ItemType.clippedShotgun: return 500;
+            case ItemType.noFingerMittens: return 50;
+        }
+    }
+
     public void setObjectStats()
     {
         switch (itemType)
