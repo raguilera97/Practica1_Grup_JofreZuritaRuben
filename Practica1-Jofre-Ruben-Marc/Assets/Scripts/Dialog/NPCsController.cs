@@ -10,12 +10,21 @@ public class NPCsController : MonoBehaviour, Interactable
     private Rigidbody2D myRigidbody;
     private Animator anim;
     public Collider2D bounds;
-    private bool canMove = true;
+    private bool playerInRange;
     public Dialogue dialogue;
+
+    [Header("Ink JSON")]
+    [SerializeField] private TextAsset inkJSON;
 
     public void Interact()
     {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        //FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        AdvancedDialogueManager.GetInstance().EnterDialogueMode(inkJSON);
+    }
+
+    private void Awake()
+    {
+        playerInRange = false;
     }
 
     // Start is called before the first frame update
@@ -30,8 +39,11 @@ public class NPCsController : MonoBehaviour, Interactable
     // Update is called once per frame
     void Update()
     {
-        
-        Move();   
+        if (!playerInRange)
+        {
+            Move();
+        }
+            
     }
 
     private void Move()
@@ -90,4 +102,21 @@ public class NPCsController : MonoBehaviour, Interactable
 
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.isTrigger)
+        {
+            anim.SetBool("InTrigger", true);
+            playerInRange = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.isTrigger)
+        {
+            anim.SetBool("InTrigger", false);
+            playerInRange = false;
+        }
+    }
 }
