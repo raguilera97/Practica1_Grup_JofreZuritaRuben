@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth = maxHealth;
 
-        healthBar.SetMaxHealt(maxHealth);
+        //healthBar.SetMaxHealt(maxHealth);
         inventory = new Inventory();
         
         rb = GetComponent<Rigidbody2D>();
@@ -57,14 +57,14 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (AdvancedDialogueManager.GetInstance().dialogueIsPlaying)
+        /*if (AdvancedDialogueManager.GetInstance().dialogueIsPlaying)
         {
             velocity = 0f;
         }
         else
         {
             velocity = 2f;
-        }
+        }*/
         
 
     }
@@ -132,11 +132,13 @@ public class PlayerController : MonoBehaviour
 
     private void CloseInventory()
     {
+        Time.timeScale = 1;
         uiPlayerInvetory.SetActive(false);
     }
 
     private void OpenInventory()
     {
+        Time.timeScale = 0;
         uiPlayerInvetory.SetActive(true);
         uiInventory.SetInventory(inventory);
         

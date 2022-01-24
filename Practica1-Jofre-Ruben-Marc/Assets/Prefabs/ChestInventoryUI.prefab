@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ui: {fileID: 158169193488809958}
+  player: {fileID: 0}
   idItem: 0
 --- !u!1 &158169193488809976
 GameObject:
@@ -977,7 +978,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 3948116526749890082}
         m_TargetAssemblyTypeName: ItemSlotTemplate, Assembly-CSharp
         m_MethodName: PickUpObject
         m_Mode: 1

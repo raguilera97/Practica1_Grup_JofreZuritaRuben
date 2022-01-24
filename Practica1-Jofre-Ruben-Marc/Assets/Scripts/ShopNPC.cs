@@ -8,6 +8,7 @@ public class ShopNPC : MonoBehaviour
     [SerializeField] UI_Inventory uiInventory;
     [SerializeField] GameObject uiShopInventory;
     [SerializeField] List<Item> shopItems = new List<Item>();
+    [SerializeField] PlayerController pla;
 
     private void Start()
     {
@@ -39,12 +40,14 @@ public class ShopNPC : MonoBehaviour
 
     public void OpenShop()
     {
+        pla.otherOpened = true;
         uiInventory.SetShop(shopInventory);
         uiShopInventory.SetActive(true);
     }
 
     public void CloseShop()
     {
+        pla.otherOpened = false;
         uiShopInventory.SetActive(false);
     }
 }
