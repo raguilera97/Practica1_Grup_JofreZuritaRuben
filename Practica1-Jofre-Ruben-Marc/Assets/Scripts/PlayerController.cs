@@ -52,6 +52,19 @@ public class PlayerController : MonoBehaviour
         CheckInteract();
     }
 
+    void FixedUpdate()
+    {
+        if (AdvancedDialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            velocity = 0f;
+        }
+        else
+        {
+            velocity = 2f;
+        }
+        
+
+    }
 
     private void UpdateAnimation()
     {
