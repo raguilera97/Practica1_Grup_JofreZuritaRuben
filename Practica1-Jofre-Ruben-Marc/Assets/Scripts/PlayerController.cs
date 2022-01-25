@@ -5,28 +5,45 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] UI_Inventory uiInventory;
+    
     Rigidbody2D rb;
     Animator anim;
     new Collider2D collider;
 
+    [SerializeField] UI_Inventory uiInventory;
     [SerializeField] float velocity = 2f;
     [SerializeField] LayerMask interactableObject;
     [SerializeField] GameObject pressE;
+    [SerializeField] GameObject uiPlayerInvetory;
+    [SerializeField] HealthBar healthBar;
 
-    private Inventory inventory;
+    private bool inventoryOpened;
+    public Inventory inventory;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
-    
+    public float damage = 5f;
+    public float atackVelocity = 3f;
+    public float maxHealth = 100f;
+    public float currentHealth;
+    public float armor = 0f;
+    public bool otherOpened = false;
 
 
 
     void Start()
     {
+        currentHealth = maxHealth;
+
+        //healthBar.SetMaxHealt(maxHealth);
         inventory = new Inventory();
-        uiInventory.SetInventory(inventory);
+        
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        inventory.AddItem(new Item { itemType = Item.ItemType.barbarianHelmet, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.clippedShotgun, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.coins, amount = 100 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.coins, amount = 100 });
+
     }
 
 
@@ -38,6 +55,19 @@ public class PlayerController : MonoBehaviour
         CheckInteract();
     }
 
+    void FixedUpdate()
+    {
+        /*if (AdvancedDialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            velocity = 0f;
+        }
+        else
+        {
+            velocity = 2f;
+        }*/
+        
+
+    }
 
     private void UpdateAnimation()
     {
@@ -81,7 +111,37 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
+            
         }
+        else if (Input.GetKeyDown(KeyCode.I) && !otherOpened)
+        {
+            if (!inventoryOpened)
+            {
+                inventoryOpened = true;
+                OpenInventory();
+            }
+            else
+            {
+                inventoryOpened = false;
+                CloseInventory();
+            }
+            
+        }
+        
+    }
+
+    private void CloseInventory()
+    {
+        Time.timeScale = 1;
+        uiPlayerInvetory.SetActive(false);
+    }
+
+    private void OpenInventory()
+    {
+        Time.timeScale = 0;
+        uiPlayerInvetory.SetActive(true);
+        uiInventory.SetInventory(inventory);
+        
     }
 
     private void Interact()
