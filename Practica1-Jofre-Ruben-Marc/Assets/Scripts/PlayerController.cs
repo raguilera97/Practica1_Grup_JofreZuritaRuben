@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ISaveable
 {
     
     Rigidbody2D rb;
@@ -199,4 +199,42 @@ public class PlayerController : MonoBehaviour
         return dir;
     }
 
+    [Serializable]
+    private struct PlayerData
+    {
+        public float damage;
+        public float atackVelocity;
+        public float currentHealth;
+        /*public float[] position = new float[3];
+        position ;*/
+    }
+       
+    public object CaptureState()
+    {
+        return new PlayerData
+        {
+            damage = damage,
+            atackVelocity = atackVelocity,
+            currentHealth = currentHealth,
+            /*position[0] = transform.position.x,
+            position[1] = transform.position.y,
+            position[2] = transform.position.z*/
+
+    };
+
+    }
+
+    public void RestoreState(object data)
+    {
+        var playerData = (PlayerData)data;
+        damage = playerData.damage;
+        atackVelocity = playerData.atackVelocity;
+        currentHealth = playerData.currentHealth;
+        
+        /*Vector3 position;
+        position.x = playerData.position[0];
+        position.y = playerData.position[1];
+        position.z = playerData.position[2];
+        transform.position = position;*/
+    }
 }

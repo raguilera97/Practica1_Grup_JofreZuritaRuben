@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCsController : MonoBehaviour, Interactable
+public class NPCsController : MonoBehaviour, Interactable, ISaveable
 {
     private Vector3 directionVector;
     private Transform myTransform;
@@ -62,7 +63,7 @@ public class NPCsController : MonoBehaviour, Interactable
 
     void ChangeDirection()
     {
-        int direction = Random.Range(0, 4);
+        int direction = UnityEngine.Random.Range(0, 4);
         switch (direction)
         {
             case 0:
@@ -118,5 +119,25 @@ public class NPCsController : MonoBehaviour, Interactable
             anim.SetBool("InTrigger", false);
             playerInRange = false;
         }
+    }
+
+    [Serializable]
+    private struct NPCData
+    {
+        public float speed;
+    }
+
+    public object CaptureState()
+    {
+        return new NPCData
+        {
+            speed = speed
+        };
+    }
+
+    public void RestoreState(object data)
+    {
+        var npcData = (NPCData)data;
+        speed = npcData.speed;
     }
 }
