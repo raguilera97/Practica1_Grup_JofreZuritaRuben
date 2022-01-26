@@ -200,27 +200,28 @@ public class PlayerController : MonoBehaviour, ISaveable
     }
 
     [Serializable]
-    private struct PlayerData
+    private class PlayerData
     {
         public float damage;
         public float atackVelocity;
         public float currentHealth;
-        /*public float[] position = new float[3];
-        position ;*/
+        public float[] position = new float[3];
+        
     }
        
     public object CaptureState()
     {
-        return new PlayerData
-        {
-            damage = damage,
-            atackVelocity = atackVelocity,
-            currentHealth = currentHealth,
-            /*position[0] = transform.position.x,
-            position[1] = transform.position.y,
-            position[2] = transform.position.z*/
+        PlayerData player = new PlayerData();
 
-    };
+
+        player.damage = damage;
+        player.atackVelocity = atackVelocity;
+        player.currentHealth = currentHealth;
+        player.position[0] = transform.position.x;
+        player.position[1] = transform.position.y;
+        player.position[2] = transform.position.z;
+
+        return player;
 
     }
 
@@ -231,10 +232,10 @@ public class PlayerController : MonoBehaviour, ISaveable
         atackVelocity = playerData.atackVelocity;
         currentHealth = playerData.currentHealth;
         
-        /*Vector3 position;
+        Vector3 position;
         position.x = playerData.position[0];
         position.y = playerData.position[1];
         position.z = playerData.position[2];
-        transform.position = position;*/
+        transform.position = position;
     }
 }
