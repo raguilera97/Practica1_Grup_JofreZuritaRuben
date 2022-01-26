@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 5957260236749014852}
   - component: {fileID: 5957260236749014848}
   - component: {fileID: 5957260236749014849}
-  - component: {fileID: 5957260236749014851}
   - component: {fileID: 5957260236749014854}
-  - component: {fileID: 8152695860747901965}
+  - component: {fileID: 5957260236749014851}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -30,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5957260236749014853}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.51, y: -0.09, z: 0}
+  m_LocalPosition: {x: -5.51, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -134,8 +133,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
-<<<<<<< HEAD
-=======
 --- !u!114 &5957260236749014854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +151,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   pressE: {fileID: 0}
->>>>>>> 05b6a14281cf0eef03d7f408ab140530f3c15ab7
+  uiPlayerInvetory: {fileID: 0}
+  healthBar: {fileID: 0}
+  otherOpened: 0
+  damage: 15
+  maxHealth: 100
+  currentHealth: 0
+  nameP: "Jes\xFAs"
+  level: 1
+  armor: 3
+  atackVelocity: 3
+  crit: 1
+  isCrit: 0
+  inBattle: 0
 --- !u!95 &5957260236749014851
 Animator:
   serializedVersion: 3
@@ -174,38 +183,3 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5957260236749014854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5957260236749014853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84a5c01d1bacc5143a21a2ad8e4d5290, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiInventory: {fileID: 5945441801890577527, guid: 2667be175657c36449bd974c9fa52099, type: 3}
-  velocity: 2
-  interactableObject:
-    serializedVersion: 2
-    m_Bits: 256
-  pressE: {fileID: 0}
---- !u!114 &8152695860747901965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5957260236749014853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 059af05b4f976384c9b67949b6bab97c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nameP: Timmy
-  level: 5
-  damage: 7
-  maxHP: 100
-  currentHP: 100
