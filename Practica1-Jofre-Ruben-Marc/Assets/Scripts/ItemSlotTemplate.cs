@@ -6,6 +6,11 @@ public class ItemSlotTemplate : MonoBehaviour
 {
     [SerializeField] UI_Inventory ui;
     [SerializeField] PlayerController player;
+    [SerializeField] BattleSystem batSys;
+    [SerializeField] PlayerHUD pHUD;
+    [SerializeField] GameObject combatPlayer;
+    
+
     public int idItem;
     public Dialogue dialogueVM, dialogueONU;
     public void UseObject()
@@ -32,6 +37,8 @@ public class ItemSlotTemplate : MonoBehaviour
                             {
                                 player.currentHealth += item.recuperationHealth;
                             }
+                            
+                            pHUD.SetHP(combatPlayer.GetComponent<PlayerController>().currentHealth);
                         }
                         else
                         {
