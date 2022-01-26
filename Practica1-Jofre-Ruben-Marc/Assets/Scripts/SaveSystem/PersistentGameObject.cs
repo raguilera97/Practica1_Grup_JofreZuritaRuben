@@ -6,29 +6,21 @@ using UnityEngine;
 [ExecuteAlways]
 public class PersistentGameObject : MonoBehaviour
 {
+    [SerializeField] private string id = string.Empty;
 
-    [SerializeField] public string GUID;
+    public string Id => id;
 
-    void Update()
-    {
-        if (Application.isPlaying) return;
-        if (string.IsNullOrEmpty(gameObject.scene.path)) return;
-
-        if (string.IsNullOrEmpty(GUID))
-        {
-            GUID = Guid.NewGuid().ToString();
-        }
-    }
+    [ContextMenu("Generate GUID")]
+    private void GenerateGUID() => id = Guid.NewGuid().ToString();
+    
 
     public object CaptureState()
     {
-        Dictionary<string, object> data = new Dictionary<string, object>();
+        var data = new Dictionary<string, object>();
 
-        ISaveable[] saveables = GetComponents<ISaveable>();
-
-        foreach(ISaveable saveable in saveables)
+        foreach(var saveable in GetComponents<ISaveable>())
         {
-            data[saveable.GetType().Name] = saveable.CaptureState();
+            data[saveable.GetType().ToString()] = saveable.CaptureState();
         }
 
         return data;
@@ -36,13 +28,17 @@ public class PersistentGameObject : MonoBehaviour
 
     public void RestoreState(object data)
     {
-        Dictionary<string, object> dataToRestore = (Dictionary<string, object>)data;
+        var dataToRestore = (Dictionary<string, object>)data;
 
-        ISaveable[] saveables = GetComponents<ISaveable>();
-
-        foreach(ISaveable saveable in saveables)
+        foreach(var saveable in GetComponents<ISaveable>())
         {
-            saveable.RestoreState(dataToRestore[saveable.GetType().Name]);
+            string typeName = saveable.GetType().ToString();
+            
+            if(dataToRestore.TryGetValue(typeName, out object val))
+            {
+                saveable.RestoreState(val);
+            }
+
         }
     }
 
