@@ -7,6 +7,7 @@ public class ItemSlotTemplate : MonoBehaviour
     [SerializeField] UI_Inventory ui;
     [SerializeField] PlayerController player;
     public int idItem;
+    public Dialogue dialogueVM, dialogueONU;
     public void UseObject()
     {
         foreach (Item item in ui.inventory.GetItemList())
@@ -34,6 +35,7 @@ public class ItemSlotTemplate : MonoBehaviour
                         }
                         else
                         {
+                            FindObjectOfType<DialogueManager>().StartDialogue(dialogueVM);
                             Debug.Log("Ya tienes la vida al maximo");
                         }
                     }
@@ -54,6 +56,7 @@ public class ItemSlotTemplate : MonoBehaviour
                         }
                         else
                         {
+                            FindObjectOfType<DialogueManager>().StartDialogue(dialogueVM);
                             Debug.Log("Ya tienes la vida al maximo");
                         }
 
@@ -61,6 +64,7 @@ public class ItemSlotTemplate : MonoBehaviour
                     //Objetos que no pueden recuperar vida
                     else
                     {
+                        FindObjectOfType<DialogueManager>().StartDialogue(dialogueONU);
                         Debug.Log("El objeto no puede usarse");
                     }
                     
