@@ -70,8 +70,6 @@ public class AdvancedDialogueManager : MonoBehaviour
         currentStory = new Story(inkJSON.text);
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
-
-        ContinueStory();
     }
 
     private IEnumerator ExitDialogueMode()
@@ -92,7 +90,15 @@ public class AdvancedDialogueManager : MonoBehaviour
         }
         else if (currentStory.currentChoices.Count == 0)
         {
-            StartCoroutine(ExitDialogueMode());
+            if (currentStory.canContinue)
+            {
+                dialogueText.text = currentStory.Continue();
+            }
+            else
+            {
+                StartCoroutine(ExitDialogueMode());
+            }
+            
         }
     }
 

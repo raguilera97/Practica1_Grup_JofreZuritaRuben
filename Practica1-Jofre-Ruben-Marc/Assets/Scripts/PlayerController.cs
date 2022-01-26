@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     public float currentHealth;
     public float armor = 0f;
     public bool otherOpened = false;
-
+    public bool chestOpen = false;
 
 
     void Start()
@@ -105,8 +105,14 @@ public class PlayerController : MonoBehaviour
 
     private void CheckInput()
     {
-        xInput = Input.GetAxisRaw("Horizontal");
-        yInput = Input.GetAxisRaw("Vertical");
+        if(!chestOpen)
+        {
+            xInput = Input.GetAxisRaw("Horizontal");
+            yInput = Input.GetAxisRaw("Vertical");
+        }
+         
+        
+        
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -129,6 +135,8 @@ public class PlayerController : MonoBehaviour
         }
         
     }
+
+    
 
     private void CloseInventory()
     {
