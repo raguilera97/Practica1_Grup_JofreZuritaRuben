@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ISaveable
 {
     
     Rigidbody2D rb;
@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour
     public float currentHealth;
     public float armor = 0f;
     public bool otherOpened = false;
-
-
+    public bool chestOpen = false;
+    public bool invetoryOpened = false;
 
     void Start()
     {
@@ -49,10 +49,33 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        CheckInput();
-        ApplyMovement();
-        UpdateAnimation();
-        CheckInteract();
+        if (!invetoryOpened)
+        {
+            CheckInput();
+            
+            ApplyMovement();
+            UpdateAnimation();
+            CheckInteract();
+        }
+        CheckInputI();
+    }
+
+    private void CheckInputI()
+    {
+        if (Input.GetKeyDown(KeyCode.I) && !otherOpened)
+        {
+            if (!inventoryOpened)
+            {
+                inventoryOpened = true;
+                OpenInventory();
+            }
+            else
+            {
+                inventoryOpened = false;
+                CloseInventory();
+            }
+
+        }
     }
 
     void FixedUpdate()
@@ -105,40 +128,35 @@ public class PlayerController : MonoBehaviour
 
     private void CheckInput()
     {
-        xInput = Input.GetAxisRaw("Horizontal");
-        yInput = Input.GetAxisRaw("Vertical");
+        if(!chestOpen)
+        {
+            xInput = Input.GetAxisRaw("Horizontal");
+            yInput = Input.GetAxisRaw("Vertical");
+        }
+         
+        
+        
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
             
         }
-        else if (Input.GetKeyDown(KeyCode.I) && !otherOpened)
-        {
-            if (!inventoryOpened)
-            {
-                inventoryOpened = true;
-                OpenInventory();
-            }
-            else
-            {
-                inventoryOpened = false;
-                CloseInventory();
-            }
-            
-        }
+      
         
     }
 
+    
+
     private void CloseInventory()
     {
-        Time.timeScale = 1;
+        inventoryOpened = false;   
         uiPlayerInvetory.SetActive(false);
     }
 
     private void OpenInventory()
     {
-        Time.timeScale = 0;
+        invetoryOpened = true;
         uiPlayerInvetory.SetActive(true);
         uiInventory.SetInventory(inventory);
         
@@ -199,4 +217,43 @@ public class PlayerController : MonoBehaviour
         return dir;
     }
 
+    [Serializable]
+    private class PlayerData
+    {
+        public float damage;
+        public float atackVelocity;
+        public float currentHealth;
+        public float[] position = new float[3];
+        
+    }
+       
+    public object CaptureState()
+    {
+        PlayerData player = new PlayerData();
+
+
+        player.damage = damage;
+        player.atackVelocity = atackVelocity;
+        player.currentHealth = currentHealth;
+        player.position[0] = transform.position.x;
+        player.position[1] = transform.position.y;
+        player.position[2] = transform.position.z;
+
+        return player;
+
+    }
+
+    public void RestoreState(object data)
+    {
+        var playerData = (PlayerData)data;
+        damage = playerData.damage;
+        atackVelocity = playerData.atackVelocity;
+        currentHealth = playerData.currentHealth;
+        
+        Vector3 position;
+        position.x = playerData.position[0];
+        position.y = playerData.position[1];
+        position.z = playerData.position[2];
+        transform.position = position;
+    }
 }
