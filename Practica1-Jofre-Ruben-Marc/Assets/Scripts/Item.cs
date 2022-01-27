@@ -20,7 +20,7 @@ public class Item
     public int id;
     public float damage = 0;
     public float atackVelocity = 0;
-    public float recuperationHealth = 0;
+    public int recuperationHealth = 0;
     public float armor = 0;
 
     public int GetCost()
@@ -41,7 +41,7 @@ public class Item
         {
             default:
             case ItemType.cheese:
-                recuperationHealth = 20f;
+                recuperationHealth = 20;
                 break;
             case ItemType.coins:
                 break;

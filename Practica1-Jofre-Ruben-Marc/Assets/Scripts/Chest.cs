@@ -28,6 +28,7 @@ public class Chest : MonoBehaviour, Interactable
         anim.SetTrigger("Open");
         if (chestOpen)
         {
+            pla.chestOpen = false;
             pla.otherOpened = false;
             chestOpen = false;
             uiChestInventory.SetActive(false);
@@ -37,6 +38,7 @@ public class Chest : MonoBehaviour, Interactable
 
     public void OpenChest()
     {
+        pla.chestOpen = true;
         pla.otherOpened = true;
         if (!chestOpen)
         {

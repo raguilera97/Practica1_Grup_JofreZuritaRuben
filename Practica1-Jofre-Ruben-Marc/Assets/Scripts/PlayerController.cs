@@ -16,18 +16,27 @@ public class PlayerController : MonoBehaviour, ISaveable
     [SerializeField] GameObject pressE;
     [SerializeField] GameObject uiPlayerInvetory;
     [SerializeField] HealthBar healthBar;
+    
 
     private bool inventoryOpened;
     public Inventory inventory;
     private float xInput, yInput;
     private Enums.Direction dir = Enums.Direction.South;
-    public float damage = 5f;
-    public float atackVelocity = 3f;
-    public float maxHealth = 100f;
-    public float currentHealth;
-    public float armor = 0f;
     public bool otherOpened = false;
+    public bool chestOpen = false;
+    public bool invetoryOpened = false;
 
+    public int damage = 5;
+    public int maxHealth = 100;
+    public int currentHealth;
+
+    public string nameP;
+    public int level;
+    public int armor = 0;
+    public int atackVelocity = 3;
+    public int crit = 1;
+    public bool isCrit = false;
+    public bool inBattle = false;
 
 
     void Start()
@@ -35,6 +44,7 @@ public class PlayerController : MonoBehaviour, ISaveable
         currentHealth = maxHealth;
 
         //healthBar.SetMaxHealt(maxHealth);
+
         inventory = new Inventory();
         
         rb = GetComponent<Rigidbody2D>();
@@ -43,16 +53,40 @@ public class PlayerController : MonoBehaviour, ISaveable
         inventory.AddItem(new Item { itemType = Item.ItemType.clippedShotgun, amount = 1 });
         inventory.AddItem(new Item { itemType = Item.ItemType.coins, amount = 100 });
         inventory.AddItem(new Item { itemType = Item.ItemType.coins, amount = 100 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.cheese, amount = 1 });
 
     }
 
 
     void Update()
     {
-        CheckInput();
-        ApplyMovement();
-        UpdateAnimation();
-        CheckInteract();
+        if (!invetoryOpened)
+        {
+            CheckInput();
+            
+            ApplyMovement();
+            UpdateAnimation();
+            CheckInteract();
+        }
+        CheckInputI();
+    }
+
+    private void CheckInputI()
+    {
+        if (Input.GetKeyDown(KeyCode.I) && !otherOpened)
+        {
+            if (!inventoryOpened)
+            {
+                inventoryOpened = true;
+                OpenInventory();
+            }
+            else
+            {
+                inventoryOpened = false;
+                CloseInventory();
+            }
+
+        }
     }
 
     void FixedUpdate()
@@ -105,40 +139,33 @@ public class PlayerController : MonoBehaviour, ISaveable
 
     private void CheckInput()
     {
-        xInput = Input.GetAxisRaw("Horizontal");
-        yInput = Input.GetAxisRaw("Vertical");
+        if(!chestOpen)
+        {
+            xInput = Input.GetAxisRaw("Horizontal");
+            yInput = Input.GetAxisRaw("Vertical");
+        }
+         
+        
+        
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
             
         }
-        else if (Input.GetKeyDown(KeyCode.I) && !otherOpened)
-        {
-            if (!inventoryOpened)
-            {
-                inventoryOpened = true;
-                OpenInventory();
-            }
-            else
-            {
-                inventoryOpened = false;
-                CloseInventory();
-            }
-            
-        }
+      
         
     }
 
-    private void CloseInventory()
+    public void CloseInventory()
     {
-        Time.timeScale = 1;
+        inventoryOpened = false;   
         uiPlayerInvetory.SetActive(false);
     }
 
-    private void OpenInventory()
+    public void OpenInventory()
     {
-        Time.timeScale = 0;
+        invetoryOpened = true;
         uiPlayerInvetory.SetActive(true);
         uiInventory.SetInventory(inventory);
         
@@ -167,14 +194,14 @@ public class PlayerController : MonoBehaviour, ISaveable
     {
         collider = Physics2D.OverlapCircle(transform.position, 0.5f, interactableObject);
 
-        if (collider)
+       /* if (collider)
         {
             pressE.SetActive(true);
         }
         else
         {
             pressE.SetActive(false);
-        }
+        }*/
     }
 
     public Enums.Direction CheckDirection()
@@ -238,4 +265,26 @@ public class PlayerController : MonoBehaviour, ISaveable
         position.z = playerData.position[2];
         transform.position = position;
     }
+
+    public bool TakeDamage(int damg)
+    {
+        if (UnityEngine.Random.value * 100 <= 5)
+        {
+            crit = 2;
+            isCrit = true;
+        }
+
+        currentHealth = currentHealth - ((damg * crit) - armor);
+
+        if (currentHealth <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
 }
