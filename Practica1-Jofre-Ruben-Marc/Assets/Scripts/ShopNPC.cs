@@ -20,29 +20,16 @@ public class ShopNPC : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        PlayerController pla = other.gameObject.GetComponent<PlayerController>();
-        if (pla)
-        {
-            OpenShop();
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D other)
-    {
-        PlayerController pla = other.gameObject.GetComponent<PlayerController>();
-        if (pla)
-        {
-            CloseShop();
-        }
-    }
 
     public void OpenShop()
     {
-        pla.otherOpened = true;
-        uiInventory.SetShop(shopInventory);
-        uiShopInventory.SetActive(true);
+        if(this.gameObject.name.Equals("NPC Maria"))
+        {
+            pla.otherOpened = true;
+            uiInventory.SetShop(shopInventory);
+            uiShopInventory.SetActive(true);
+        }
+        
     }
 
     public void CloseShop()

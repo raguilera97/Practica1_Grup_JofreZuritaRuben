@@ -17,10 +17,10 @@ public class PlayerHUD : MonoBehaviour
     }
 
 
-    public void SetHUD(PlayerController unit)
+    public void SetHUD(PlayerController unit, LevelSystem sys)
 	{
 		nameText.text = unit.nameP;
-		levelText.text = "Lvl " + unit.level;
+		levelText.text = "Lvl 0" + (sys.level + 1);
 		hpSlider.maxValue = unit.maxHealth;
 		hpSlider.value = unit.currentHealth;
 	}

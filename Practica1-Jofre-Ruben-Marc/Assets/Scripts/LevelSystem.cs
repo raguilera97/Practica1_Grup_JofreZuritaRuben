@@ -30,6 +30,7 @@ public class LevelSystem : MonoBehaviour
                 pla.damage = pla.damage + 2;
                 pla.atackVelocity = pla.atackVelocity + 2;
                 pla.armor = pla.armor + 1;
+                hb.SetMaxHealt(pla.maxHealth);
                 hb.SetHealth(pla.maxHealth, pla.maxHealth);
             }
         }
