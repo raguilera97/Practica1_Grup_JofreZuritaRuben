@@ -153,8 +153,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   pressE: {fileID: 0}
-<<<<<<< HEAD
-=======
   uiPlayerInvetory: {fileID: 0}
   healthBar: {fileID: 0}
   otherOpened: 0
@@ -168,7 +166,6 @@ MonoBehaviour:
   crit: 1
   isCrit: 0
   inBattle: 0
->>>>>>> combat_torns
 --- !u!95 &5957260236749014851
 Animator:
   serializedVersion: 3

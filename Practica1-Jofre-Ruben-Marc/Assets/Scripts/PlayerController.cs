@@ -229,9 +229,9 @@ public class PlayerController : MonoBehaviour, ISaveable
     [Serializable]
     private class PlayerData
     {
-        public float damage;
-        public float atackVelocity;
-        public float currentHealth;
+        public int damage;
+        public int atackVelocity;
+        public int currentHealth;
         public float[] position = new float[3];
         
     }
