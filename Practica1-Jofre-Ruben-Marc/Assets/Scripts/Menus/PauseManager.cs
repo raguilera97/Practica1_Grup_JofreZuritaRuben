@@ -8,6 +8,7 @@ public class PauseManager : MonoBehaviour
     private bool isPaused;
     public GameObject pausePanel;
     public string mainMenu;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +31,12 @@ public class PauseManager : MonoBehaviour
         isPaused = !isPaused;
         if (isPaused)
         {
-            pausePanel.SetActive(true);
+            pausePanel.gameObject.SetActive(true);
             Time.timeScale = 0f;
         }
         else
         {
-            pausePanel.SetActive(false);
+            pausePanel.gameObject.SetActive(false);
             Time.timeScale = 1f;
         }
     }

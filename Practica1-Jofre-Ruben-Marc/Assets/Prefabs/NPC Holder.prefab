@@ -127,8 +127,6 @@ MonoBehaviour:
     name: "El Cu\xF1ao"
     sentences:
     - Tengo tantas ganas
-    - De ganas tengo
-    - tanga ganas tengo
   inkJSON: {fileID: 4900000, guid: 97958b17412624e40aedc6c563b83279, type: 3}
 --- !u!114 &2794858513474758664
 MonoBehaviour:

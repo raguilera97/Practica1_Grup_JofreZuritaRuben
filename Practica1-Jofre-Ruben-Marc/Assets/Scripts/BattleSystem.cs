@@ -13,10 +13,12 @@ public class BattleSystem : MonoBehaviour
 
 	public Transform playerBattlePos;
 	public Transform enemyBattlePos;
+	public GameObject background;
 
 	PlayerController playerUnit;
 	EnemyBattle enemyUnit;
-	LevelSystem lvl;
+	
+	public LevelSystem lvl;
 
 	public Text combatText;
 
@@ -26,6 +28,8 @@ public class BattleSystem : MonoBehaviour
 	public GameObject player;
 	public GameObject attackButton;
 	public GameObject itemButton;
+	public HealthBar healthBar;
+	public GameObject plainf;
 
 	public bool inBattle = false;
 	
@@ -36,7 +40,7 @@ public class BattleSystem : MonoBehaviour
 
 	public void battleStarts()
     {
-		inBattle = true;
+		background.SetActive(true);		
 		player.SetActive(false);
 		//playerHUD.hpSlider.value = player.GetComponent<PlayerController>().currentHealth;
 		state = BattleState.START;
@@ -46,16 +50,27 @@ public class BattleSystem : MonoBehaviour
 	IEnumerator SetupBattle()
 	{
 		battleHUD.SetActive(true);
+		plainf.SetActive(false);
+		
 
 		GameObject playerGO = Instantiate(playerPrefab, playerBattlePos);
 		playerUnit = playerGO.GetComponent<PlayerController>();
+		playerUnit.inBattle = false;
+		playerUnit.maxHealth = player.GetComponent<PlayerController>().maxHealth;
+		playerUnit.currentHealth = player.GetComponent<PlayerController>().currentHealth;
+		playerUnit.atackVelocity = player.GetComponent<PlayerController>().atackVelocity;
+		playerUnit.damage = player.GetComponent<PlayerController>().damage;
+		playerUnit.armor = player.GetComponent<PlayerController>().armor;
+		playerUnit.critChance = player.GetComponent<PlayerController>().critChance;
+		playerUnit.invetoryOpened = true;
+		
 
 		GameObject enemyGO = Instantiate(enemyPrefab, enemyBattlePos);
 		enemyUnit = enemyGO.GetComponent<EnemyBattle>();
 
 		combatText.text = " Fight starts!! " ;
 
-		playerHUD.SetHUD(playerUnit);
+		playerHUD.SetHUD(playerUnit,lvl);
 		enemyHUD.SetHUD(enemyUnit);
 
 		yield return new WaitForSeconds(2f);
@@ -164,10 +179,11 @@ public class BattleSystem : MonoBehaviour
 
 	void EndBattle()
 	{
+
 		if (state == BattleState.WON)
 		{
 			combatText.text = "You won the battle!";
-			//lvl.AddExperience(enemyUnit.amountXP);
+			lvl.AddExperience(enemyUnit.amountXP);
 			 
 			foreach(Item item in enemyUnit.drops.GetItemList())
             {
@@ -179,11 +195,16 @@ public class BattleSystem : MonoBehaviour
 		{
 			combatText.text = "You were defeated.";
 		}
+		player.GetComponent<PlayerController>().currentHealth = playerUnit.currentHealth;
+		healthBar.SetHealth(player.GetComponent<PlayerController>().currentHealth, player.GetComponent<PlayerController>().maxHealth);
 
+		background.SetActive(false);
+		playerUnit.GetComponent<PlayerController>().invetoryOpened = false;
 		Destroy(playerUnit.gameObject);
 		Destroy(enemyUnit.gameObject);
 		battleHUD.SetActive(false);
 		player.SetActive(true);
 		inBattle = false;
+		plainf.SetActive(true);
 	}
 }

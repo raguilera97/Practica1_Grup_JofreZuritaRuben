@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour, ISaveable
     [SerializeField] GameObject pressE;
     [SerializeField] GameObject uiPlayerInvetory;
     [SerializeField] HealthBar healthBar;
+    [SerializeField] PauseManager pausemenu;
     
 
     private bool inventoryOpened;
@@ -31,10 +32,10 @@ public class PlayerController : MonoBehaviour, ISaveable
     public int currentHealth;
 
     public string nameP;
-    public int level;
     public int armor = 0;
     public int atackVelocity = 3;
     public int crit = 1;
+    public int critChance = 5;
     public bool isCrit = false;
     public bool inBattle = false;
 
@@ -43,7 +44,11 @@ public class PlayerController : MonoBehaviour, ISaveable
     {
         currentHealth = maxHealth;
 
-        //healthBar.SetMaxHealt(maxHealth);
+        if (!inBattle)
+        {
+            healthBar.SetMaxHealt(maxHealth);
+        }
+        
 
         inventory = new Inventory();
         
@@ -77,12 +82,10 @@ public class PlayerController : MonoBehaviour, ISaveable
         {
             if (!inventoryOpened)
             {
-                inventoryOpened = true;
                 OpenInventory();
             }
             else
             {
-                inventoryOpened = false;
                 CloseInventory();
             }
 
@@ -91,14 +94,14 @@ public class PlayerController : MonoBehaviour, ISaveable
 
     void FixedUpdate()
     {
-        /*if (AdvancedDialogueManager.GetInstance().dialogueIsPlaying)
+        if (AdvancedDialogueManager.GetInstance().dialogueIsPlaying)
         {
             velocity = 0f;
         }
         else
         {
-            velocity = 2f;
-        }*/
+            velocity = 3f;
+        }
         
 
     }
@@ -144,8 +147,6 @@ public class PlayerController : MonoBehaviour, ISaveable
             xInput = Input.GetAxisRaw("Horizontal");
             yInput = Input.GetAxisRaw("Vertical");
         }
-         
-        
         
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -159,12 +160,16 @@ public class PlayerController : MonoBehaviour, ISaveable
 
     public void CloseInventory()
     {
-        inventoryOpened = false;   
+        inventoryOpened = false;
+        rb.velocity = new Vector2(1, 1);
+        invetoryOpened = false;
         uiPlayerInvetory.SetActive(false);
     }
 
     public void OpenInventory()
     {
+        inventoryOpened = true;
+        rb.velocity = new Vector2(0, 0);
         invetoryOpened = true;
         uiPlayerInvetory.SetActive(true);
         uiInventory.SetInventory(inventory);
@@ -194,14 +199,14 @@ public class PlayerController : MonoBehaviour, ISaveable
     {
         collider = Physics2D.OverlapCircle(transform.position, 0.5f, interactableObject);
 
-       /* if (collider)
+        if (collider)
         {
             pressE.SetActive(true);
         }
         else
         {
             pressE.SetActive(false);
-        }*/
+        }
     }
 
     public Enums.Direction CheckDirection()
@@ -230,7 +235,7 @@ public class PlayerController : MonoBehaviour, ISaveable
     private class PlayerData
     {
         public int damage;
-        public int atackVelocity;
+        public int  atackVelocity;
         public int currentHealth;
         public float[] position = new float[3];
         
@@ -268,7 +273,7 @@ public class PlayerController : MonoBehaviour, ISaveable
 
     public bool TakeDamage(int damg)
     {
-        if (UnityEngine.Random.value * 100 <= 5)
+        if (UnityEngine.Random.value * 100 <= critChance)
         {
             crit = 2;
             isCrit = true;

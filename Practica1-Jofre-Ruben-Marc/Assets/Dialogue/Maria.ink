@@ -1,12 +1,12 @@
-﻿Hola soy Maria, ya te has despertado ?
+﻿Hola soy Maria, Bienvenido a la tienda ?
 -> MyChoices
 === MyChoices ===
-+ [Timmy: Si, donde estoy ?] -> QIDA
-+ [Timmy: Quiero buscar una salida para ir a la ciudad!] -> VAQ
++ [Acceder a la tienda] -> QIDA
++ [Salir] -> VAQ
 
 === QIDA ===
-Estas en un campamento, de aqui poco este lugar no sera seguro.
--> MyChoices
+Bienvenido
+->MyChoices
 === VAQ ===
-Busca a mi marido Nico, te podra ayudar.
+Adios
 ->END

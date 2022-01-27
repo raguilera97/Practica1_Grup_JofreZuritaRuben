@@ -74,14 +74,20 @@ public class AdvancedDialogueManager : MonoBehaviour
 
     private IEnumerator ExitDialogueMode()
     {
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(2f);
 
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
     }
 
-    private void ContinueStory()
+    public void CloseDialog()
+    {
+        dialogueIsPlaying = false;
+        dialoguePanel.SetActive(false);
+        dialogueText.text = "";
+    }
+    public void ContinueStory()
     {
         if (currentStory.canContinue)
         {

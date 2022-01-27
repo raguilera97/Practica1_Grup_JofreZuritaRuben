@@ -6,6 +6,7 @@ public class ItemSlotTemplate : MonoBehaviour
 {
     [SerializeField] UI_Inventory ui;
     [SerializeField] PlayerController player;
+    [SerializeField] HealthBar hb;
     [SerializeField] BattleSystem batSys;
     [SerializeField] PlayerHUD pHUD;
     [SerializeField] GameObject combatPlayer;
@@ -37,8 +38,9 @@ public class ItemSlotTemplate : MonoBehaviour
                             {
                                 player.currentHealth += item.recuperationHealth;
                             }
-                            
-                            pHUD.SetHP(combatPlayer.GetComponent<PlayerController>().currentHealth);
+
+                            hb.SetHealth(player.currentHealth, player.maxHealth);
+                            //pHUD.SetHP(combatPlayer.GetComponent<PlayerController>().currentHealth);
                         }
                         else
                         {
@@ -65,7 +67,6 @@ public class ItemSlotTemplate : MonoBehaviour
                         else
                         {
                             FindObjectOfType<DialogueManager>().StartDialogue(dialogueVM);
-                            Time.timeScale = 0;
                             Debug.Log("Ya tienes la vida al maximo");
                         }
 

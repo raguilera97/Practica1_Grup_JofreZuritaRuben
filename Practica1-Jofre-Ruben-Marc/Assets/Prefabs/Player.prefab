@@ -13,8 +13,6 @@ GameObject:
   - component: {fileID: 5957260236749014848}
   - component: {fileID: 5957260236749014849}
   - component: {fileID: 5957260236749014854}
-  - component: {fileID: 8476509504796337706}
-  - component: {fileID: 8152695860747901965}
   - component: {fileID: 5957260236749014851}
   m_Layer: 0
   m_Name: Player
@@ -31,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5957260236749014853}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.51, y: -0.09, z: 0}
+  m_LocalPosition: {x: -7.62, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -74,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -926832675
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: -887198650070619915, guid: 2491b3e14f6e24d48a52a0781f258b3e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -156,6 +154,8 @@ MonoBehaviour:
   uiPlayerInvetory: {fileID: 0}
   healthBar: {fileID: 0}
   otherOpened: 0
+  chestOpen: 0
+  invetoryOpened: 0
   damage: 15
   maxHealth: 100
   currentHealth: 0
